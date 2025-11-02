@@ -1,15 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
+<% layout('layouts/boilerplate') %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-</head>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome to CampEase</h1>
+            <p class="hero-subtitle">Discover and share amazing camping experiences with fellow outdoor enthusiasts</p>
+            <a href="/campgrounds" class="btn-hero">Explore Campgrounds</a>
+        </div>
+    </div>
+</section>
 
-<body>
-    <h1>HOME! YELP CAMP!</h1>
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="display-4 font-weight-bold text-dark mb-3">Why Choose CampEase?</h2>
+                <p class="lead text-muted">Your ultimate destination for camping adventures and reviews</p>
+            </div>
+        </div>
 
-</body>
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card loading scroll-reveal stagger-1 hover-lift">
+                    <div class="feature-icon animate-float">🏕️</div>
+                    <h3 class="feature-title">Discover Camps</h3>
+                    <p class="feature-description">Explore thousands of verified campgrounds with detailed reviews, photos, and ratings from real campers.</p>
+                </div>
+            </div>
 
-</html>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card loading scroll-reveal stagger-2 hover-lift">
+                    <div class="feature-icon animate-float">⭐</div>
+                    <h3 class="feature-title">Share Reviews</h3>
+                    <p class="feature-description">Rate and review your camping experiences to help others find the perfect spot for their adventure.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card loading scroll-reveal stagger-3 hover-lift">
+                    <div class="feature-icon animate-float">📸</div>
+                    <h3 class="feature-title">Photo Gallery</h3>
+                    <p class="feature-description">Upload and browse beautiful campground photos to get a true sense of each location.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card loading scroll-reveal stagger-4 hover-lift">
+                    <div class="feature-icon animate-float">🗺️</div>
+                    <h3 class="feature-title">Location Based</h3>
+                    <p class="feature-description">Find campgrounds by location and discover new camping spots in your area or dream destinations.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card loading scroll-reveal stagger-5 hover-lift">
+                    <div class="feature-icon animate-float">💰</div>
+                    <h3 class="feature-title">Price Transparency</h3>
+                    <p class="feature-description">Know exactly what to expect with clear pricing information and honest reviews about value.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card loading scroll-reveal stagger-6 hover-lift">
+                    <div class="feature-icon animate-float">👥</div>
+                    <h3 class="feature-title">Community Driven</h3>
+                    <p class="feature-description">Join a community of outdoor enthusiasts sharing tips, stories, and recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white;">
+    <div class="container text-center">
+        <h2 class="display-5 font-weight-bold mb-4">Ready for Your Next Adventure?</h2>
+        <p class="lead mb-4">Join thousands of campers who trust CampEase for their outdoor planning</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/register" class="btn btn-light btn-lg px-4 py-3 btn-animated interactive-element">Get Started</a>
+            <a href="/campgrounds" class="btn btn-outline-light btn-lg px-4 py-3 btn-animated interactive-element">Browse Camps</a>
+        </div>
+    </div>
+</section>

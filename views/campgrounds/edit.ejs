@@ -50,18 +50,27 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <% campground.images.forEach(function(img, i) {%>
-                        <img src="<%= img.thumbnail %>" class="img-thumbnail" alt="">
-                        <div class="form-check-inline">
-                            <input type="checkbox" name="deleteImages[]" id="image<%= i %>" value="<%= img.filename %>">
-                        </div>
-                        <label for="image<%= i %>">Delete?</label>
+                    <label class="form-label">Current Images</label>
+                    <div class="row">
+                        <% campground.images.forEach(function(img, i) {%>
+                            <div class="col-md-4 col-sm-6 mb-3">
+                                <div class="card">
+                                    <img src="<%= img.thumbnail %>" class="card-img-top img-fluid" alt="Campground image" style="height: 200px; object-fit: cover;">
+                                    <div class="card-body text-center">
+                                        <div class="form-check">
+                                            <input type="checkbox" name="deleteImages[]" id="image<%= i %>" value="<%= img.filename %>" class="form-check-input">
+                                            <label for="image<%= i %>" class="form-check-label">Delete this image</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         <% }) %>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <button class="btn btn-info">Update Campground</button>
                 </div>
             </form>
-            <a href="/campgrounds/<%= campground._id%>">Back To Campground</a>
+            <a href="/campgrounds/<%= campground._id%>" class="btn btn-secondary">Back To Campground</a>
         </div>
     </div>

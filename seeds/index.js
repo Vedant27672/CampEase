@@ -1,10 +1,15 @@
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
+
 const mongoose = require('mongoose');
 const cities = require('./cities');
 const { places, descriptors } = require('./seedHelpers');
 const Campground = require('../models/campground');
 const User = require('../models/user');
+const db_url = process.env.atlas_URL;
 
-mongoose.connect('mongodb://localhost:27017/CampEase', {
+mongoose.connect(db_url, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
@@ -22,7 +27,7 @@ const sample = array => array[Math.floor(Math.random() * array.length)];
 
 const seedDB = async () => {
     await Campground.deleteMany({});
-    const user = new User({ email: 'testuser@example.com', username: 'testuser' });
+    const user = new User({ email: 'testuser1@example.com', username: 'testuser' });
     await user.setPassword('password');
     await user.save();
 

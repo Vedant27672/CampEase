@@ -1,14 +1,13 @@
 <% layout('layouts/boilerplate')%>
     <link rel="stylesheet" href="/stylesheets/stars.css">
 
-
     <div class="row">
         <div class="col-12 col-lg-6">
             <div id="campgroundCarousel" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
                     <% campground.images.forEach((img, i)=> {%>
                         <div class="carousel-item <%= i===0 ? 'active' : '' %>">
-                            <img src="<%= img.url %>" class="d-block w-100" alt="">
+                            <img src="<%= img.url  %>" class="d-block w-100" alt="">
                         </div>
                         <% }) %>
 
@@ -60,6 +59,10 @@
                 <h2>Leave a Review</h2>
                 <form action="/campgrounds/<%=campground._id%>/reviews" method="POST" class="mb-3 validated-form"
                     novalidate>
+                    <!-- <div class="mb-3">
+                        <label class="form-label" for="rating">Rating</label>
+                        <input class="form-range" type="range" min="1" max="5" name="review[rating]" id="rating">
+                    </div> -->
                     <div class="mb-3">
                         <fieldset class="starability-basic">
                             <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1"
@@ -97,6 +100,7 @@
                                 <p class="starability-result" data-rating="<%= review.rating %>">
                                     Rated: <%= review.rating %> stars
                                 </p>
+                                <!-- <h6 class="card-subtitle mb-2 text-muted">by <%= review.author.username %> -->
                                 </h6>
                                 <p class="card-text">Review: <%= review.body %>
                                 </p>
@@ -112,56 +116,3 @@
                         <% } %>
         </div>
     </div>
-
-    <div class="row mt-4">
-        <div class="col-12">
-            <h3>Location</h3>
-            <div id="map" style="width: 100%; height: 400px;"></div>
-        </div>
-    </div>
-
-    <script src='https://cdn.maptiler.com/maplibre-gl-js/v2.4.0/maplibre-gl.js'></script>
-    <link href='https://cdn.maptiler.com/maplibre-gl-js/v2.4.0/maplibre-gl.css' rel='stylesheet' />
-    <script>
-        // 🚨 CORRECTION APPLIED: Safely passing the server-side variable to client-side JS.
-        const mapToken = '<%- mapToken %>';
-
-        const map = new maplibregl.Map({
-            container: 'map', // container ID
-            style: `https://api.maptiler.com/maps/world/style.json?key=${mapToken}`,
-            center: <%- JSON.stringify(campground.geometry.coordinates) %>, // starting position [lng, lat]
-            zoom: 9 // starting zoom
-        });
-
-        // Add map controls for navigation
-        map.addControl(new maplibregl.NavigationControl(), 'top-left');
-
-        const title = <%- JSON.stringify(campground.title) %>;
-        const campgroundLocation = <%- JSON.stringify(campground.location) %>;
-
-        // Highlight the current campground with a different marker
-        new maplibregl.Marker({ color: '#ff0000' }) // Red marker for current campground
-            .setLngLat(<%- JSON.stringify(campground.geometry.coordinates) %>)
-            .setPopup(
-                new maplibregl.Popup({ offset: 25 })
-                    .setHTML(
-                        `<h3>${title}</h3><p>${campgroundLocation}</p>`
-                    )
-            )
-            .addTo(map);
-
-        // Add other campgrounds as smaller markers
-        <% campgrounds.forEach(camp => { %>
-            <% if (camp._id.toString() !== campground._id.toString()) { %>
-                new maplibregl.Marker({ color: '#0000ff' }) // Blue markers for other campgrounds
-                    .setLngLat(camp.geometry.coordinates)
-                    .setPopup(
-                        new maplibregl.Popup({ offset: 25 })
-                            .setHTML(
-                                `<h3>${camp.title}</h3><p>${camp.location}</p>`
-                            )
-                    )
-                    .addTo(map);
-            <% } %>
-        <% }); %>
-    </script>

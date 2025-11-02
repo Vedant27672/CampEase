@@ -20,6 +20,7 @@ module.exports.createCampground = async (req, res, next) => {
     res.redirect(`/campgrounds/${campground._id}`)
 }
 
+// 💡 CORRECTION APPLIED HERE: Passing the mapToken to the show.ejs file
 module.exports.showCampground = async (req, res,) => {
     const campground = await Campground.findById(req.params.id).populate({
         path: 'reviews',
@@ -32,7 +33,15 @@ module.exports.showCampground = async (req, res,) => {
         req.flash('error', 'Cannot find that campground!');
         return res.redirect('/campgrounds');
     }
-    res.render('campgrounds/show', { campground });
+
+    const campgrounds = await Campground.find({});
+
+    // 🔑 Critical Change: Pass the MAPTILER_TOKEN from the server to the template
+    res.render('campgrounds/show', {
+        campground,
+        campgrounds,
+        mapToken: process.env.MAPTILER_TOKEN // Assumes you've defined MAPTILER_TOKEN in your .env
+    });
 }
 
 module.exports.renderEditForm = async (req, res) => {

@@ -1,6 +1,6 @@
-if (process.env.NODE_ENV !== "production") {
-    require('dotenv').config();
-}
+require('dotenv').config();
+
+console.log('MAPTILER_TOKEN:', process.env.MAPTILER_TOKEN);
 
 const express = require('express');
 const path = require('path');
@@ -21,9 +21,9 @@ const reviewRoutes = require('./routes/reviews');
 
 mongoose.connect('mongodb://localhost:27017/CampEase', {
     useNewUrlParser: true,
-    useCreateIndex: true,
+    // useCreateIndex: true, // Deprecated in recent Mongoose versions
     useUnifiedTopology: true,
-    useFindAndModify: false
+    // useFindAndModify: false // Deprecated in recent Mongoose versions
 });
 
 const db = mongoose.connection;
@@ -64,7 +64,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-    console.log(req.session)
+    // console.log(req.session) // Removed log for cleaner server output
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
@@ -74,7 +74,8 @@ app.use((req, res, next) => {
 
 app.use('/', userRoutes);
 app.use('/campgrounds', campgroundRoutes)
-app.use('/campgrounds/:id/reviews', reviewRoutes)
+// 💡 CORRECTION: Mount reviews route to the base path, and use mergeParams: true in reviewRoutes.js
+app.use('/campgrounds/:id/reviews', reviewRoutes) 
 
 
 app.get('/', (req, res) => {
@@ -95,5 +96,3 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
     console.log('Serving on port 3000')
 })
-
-

@@ -3,6 +3,7 @@
         <h1 class="text-center">New Campground</h1>
         <div class="col-6 offset-3">
             <form action="/campgrounds" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+                <div id="map" style="width: 100%; height: 300px; margin-bottom: 20px;"></div>
                 <div class="mb-3">
                     <label class="form-label" for="title">Title</label>
                     <input class="form-control" type="text" id="title" name="campground[title]" required>
@@ -65,3 +66,31 @@
             <a href="/campgrounds" class="btn btn-primary">All Campgrounds</a>
         </div>
     </div>
+
+    <script src='https://cdn.maptiler.com/maplibre-gl-js/v2.4.0/maplibre-gl.js'></script>
+    <link href='https://cdn.maptiler.com/maplibre-gl-js/v2.4.0/maplibre-gl.css' rel='stylesheet' />
+    <script>
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://api.maptiler.com/maps/streets/style.json?key=<%- process.env.MAPTILER_TOKEN %>',
+            center: [-74.5, 40],
+            zoom: 9
+        });
+
+        let marker = new maplibregl.Marker({
+            color: "#FF0000",
+            draggable: true
+        }).setLngLat([-74.5, 40]).addTo(map);
+
+        function onDragEnd() {
+            const lngLat = marker.getLngLat();
+            document.getElementById('location').value = `${lngLat.lng},${lngLat.lat}`;
+        }
+
+        marker.on('dragend', onDragEnd);
+
+        map.on('click', (e) => {
+            marker.setLngLat(e.lngLat).addTo(map);
+            document.getElementById('location').value = `${e.lngLat.lng},${e.lngLat.lat}`;
+        });
+    </script>

@@ -2,6 +2,10 @@
 
 A full-stack web application for discovering and sharing campgrounds. Users can view, create, edit, and review campgrounds with image uploads and user authentication.
 
+## Live Demo
+
+🚀 **View the live application:** [https://campease.onrender.com/](https://campease.onrender.com/)
+
 ## Features
 
 - User authentication and authorization
@@ -25,18 +29,21 @@ A full-stack web application for discovering and sharing campgrounds. Users can 
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd CampEase
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Set up environment variables:
    Create a `.env` file in the root directory with the following:
+
    ```
    CLOUDINARY_CLOUD_NAME=your_cloud_name
    CLOUDINARY_KEY=your_api_key
@@ -46,11 +53,13 @@ A full-stack web application for discovering and sharing campgrounds. Users can 
 4. Start MongoDB locally or update the connection string in `app.js`.
 
 5. Run the application:
+
    ```bash
    npm start
    ```
 
    Or for development with auto-restart:
+
    ```bash
    npm run dev
    ```

@@ -1653,12 +1653,52 @@ textarea.field-input { resize: vertical; min-height: 110px; }
     .cta-inner       { flex-direction: column; text-align: center; }
     .hero-btns       { flex-direction: column; align-items: center; }
     .camps-toolbar   { flex-direction: column; align-items: stretch; }
+
+    /* Booking history cards */
+    .booking-card         { grid-template-columns: 1fr; }
+    .booking-card-img     { min-height: 160px; max-height: 180px; overflow: hidden; }
+    .booking-card-actions { flex-wrap: wrap; }
+
+    /* Booking confirmation */
+    .confirmation-card { border-radius: var(--radius-lg); }
+    .confirmation-header  { padding: 1.75rem 1.25rem; }
+    .confirmation-camp-row { flex-direction: column; align-items: flex-start; padding: 1.25rem; }
+    .confirmation-details { padding: 0.5rem 1.25rem; }
+    .confirmation-actions { flex-direction: column; padding: 1.25rem; }
+    .confirmation-actions .btn-fill,
+    .confirmation-actions .btn-outline,
+    .confirmation-actions .btn-danger-outline { width: 100%; justify-content: center; }
+
+    /* Show page meta row */
+    .show-info-top { flex-direction: column; gap: 0.5rem; }
+    .show-price-block { text-align: left; }
+    .show-meta-row { gap: 0.75rem; }
+
+    /* Show map canvas smaller on mobile */
+    .show-map-canvas { height: 200px; }
+    .form-map-canvas { height: 180px; }
+
+    /* Stats strip */
+    .stats-strip { flex-direction: column; gap: 0.5rem; padding: 1.25rem 1rem; }
+    .stat-divider { display: none; }
 }
 @media (max-width: 480px) {
     .camps-grid { grid-template-columns: 1fr; }
     .features-grid { grid-template-columns: 1fr; }
     .stat-divider { display: none; }
     .stats-strip  { gap: 1rem; }
+
+    /* Prevent any element from causing horizontal scroll */
+    body { overflow-x: hidden; }
+    .show-grid, .cart-layout { overflow-x: hidden; }
+
+    /* Cart */
+    .cart-item-card { grid-template-columns: 1fr; }
+    .cart-item-img  { min-height: 140px; max-height: 160px; overflow: hidden; }
+
+    /* Booking dates row wraps on very small screens */
+    .booking-dates-row { gap: 0.5rem; }
+    .booking-date-val  { font-size: 0.82rem; }
 }
 
 /* ════════════════════════════════════════════
@@ -1885,6 +1925,26 @@ textarea.field-input { resize: vertical; min-height: 110px; }
     display: flex;
     gap: 0.6rem;
     margin-top: 1rem;
+    flex-wrap: wrap;
+}
+.booking-widget-actions .btn-fill,
+.booking-widget-actions .btn-outline {
+    flex: 1;
+    justify-content: center;
+    min-width: 120px;
+}
+
+@media (max-width: 500px) {
+    .booking-dates-grid {
+        grid-template-columns: 1fr;
+    }
+    .booking-widget-actions {
+        flex-direction: column;
+    }
+    .booking-widget-actions .btn-fill,
+    .booking-widget-actions .btn-outline {
+        width: 100%;
+    }
 }
 .booking-summary {
     background: var(--bg-alt);

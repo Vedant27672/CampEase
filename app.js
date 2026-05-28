@@ -23,7 +23,8 @@ const cartRoutes = require('./routes/cart');
 const Campground = require('./models/campground');
 const Review = require('./models/review');
 const swaggerUi = require('swagger-ui-express');
-const swaggerDoc = require('./swagger-output.json');
+let swaggerDoc = {};
+try { swaggerDoc = require('./swagger-output.json'); } catch (_) {}
 const db_url = process.env.atlas_URL;
 const MongoDBStore = require('connect-mongo');
 

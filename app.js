@@ -22,6 +22,8 @@ const bookingRoutes = require('./routes/bookings');
 const cartRoutes = require('./routes/cart');
 const Campground = require('./models/campground');
 const Review = require('./models/review');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDoc = require('./swagger-output.json');
 const db_url = process.env.atlas_URL;
 const MongoDBStore = require('connect-mongo');
 
@@ -119,6 +121,11 @@ app.use((req, res, next) => {
     next();
 })
 
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc, {
+    customSiteTitle: 'CampEase API Docs',
+    customCss: '.swagger-ui .topbar { display: none }'
+}));
 
 app.use('/', userRoutes);
 app.use('/', cartRoutes);

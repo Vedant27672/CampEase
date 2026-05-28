@@ -63,6 +63,12 @@ CampEase is a full-stack campground discovery and booking platform. Users can br
 - **Google OAuth 2.0** — one-click sign-in; automatically links to an existing local account if emails match
 - All protected routes save and restore the intended destination after login
 
+### 📖 API Documentation
+- Auto-generated **Swagger / OpenAPI** docs served at `/api-docs`
+- Powered by `swagger-autogen` (scans route files) + `swagger-ui-express` (interactive UI)
+- All routes grouped by feature — Campgrounds, Reviews, Bookings, Cart, Auth
+- Regenerate any time with `npm run swagger`; auto-regenerated on every Render deploy
+
 ### 🎨 UI / UX
 - Full **light / dark mode** — persisted in `localStorage`, respects `prefers-color-scheme` on first visit
 - Live stat counters on the home page pulled directly from the database
@@ -87,6 +93,7 @@ CampEase is a full-stack campground discovery and booking platform. Users can br
 | Date Picker | Flatpickr (CDN) |
 | Calendar | FullCalendar 6 (CDN) |
 | CSS | Bootstrap 5.3 + custom CSS design system (CSS custom properties) |
+| API Docs | swagger-autogen + swagger-ui-express |
 | Session Store | connect-mongo (MongoDB-backed sessions) |
 | Deployment | Render |
 
@@ -218,6 +225,7 @@ CampEase/
 | `GET` | `/register` | Register |
 | `GET` | `/login` | Login |
 | `GET` | `/auth/google` | Google OAuth sign-in |
+| `GET` | `/api-docs` | Interactive Swagger API docs |
 
 ---
 
@@ -225,7 +233,7 @@ CampEase/
 
 1. Push your code to GitHub
 2. Create a **Web Service** on [Render](https://render.com) and connect your repo
-3. Set **Build Command:** `npm install`
+3. Set **Build Command:** `npm install && npm run swagger`
 4. Set **Start Command:** `node app.js`
 5. Add all env vars from `.env` in the Render **Environment** tab
 6. **Do not** set `GOOGLE_CALLBACK_URL` — it is derived automatically from the request (the app has `trust proxy` enabled for Render's HTTPS proxy)

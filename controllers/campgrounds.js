@@ -1,4 +1,5 @@
 const Campground = require('../models/campground');
+const Booking = require('../models/booking');
 const { cloudinary } = require('../cloudinary');
 
 // ── MapTiler geocoding helper ───────────────────────────────────
@@ -79,7 +80,14 @@ module.exports.showCampground = async (req, res) => {
         }
     }));
 
-    res.render('campgrounds/show', { campground, allCampFeatures });
+    // Fetch confirmed bookings for Flatpickr disabled-dates
+    const confirmedBookings = await Booking.find({
+        campground: campground._id,
+        status: 'confirmed',
+        checkOut: { $gte: new Date() }
+    }, { checkIn: 1, checkOut: 1, _id: 0 }).lean();
+
+    res.render('campgrounds/show', { campground, allCampFeatures, confirmedBookings });
 };
 
 module.exports.renderEditForm = async (req, res) => {

@@ -30,6 +30,11 @@
             <a class="btn-nav-ghost" href="/login">Sign in</a>
             <a class="btn-nav-fill" href="/register">Get started</a>
             <% } else { %>
+            <!-- Cart icon -->
+            <a href="/cart" class="nav-cart-btn" aria-label="Cart" title="My Cart">
+                <i class="fas fa-shopping-cart"></i>
+                <% if(cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %>
+            </a>
             <!-- User menu -->
             <div class="nav-user" id="navUser">
                 <button class="nav-user-btn" id="navUserBtn" aria-expanded="false" aria-haspopup="true">
@@ -43,6 +48,16 @@
                     </a>
                     <a class="nav-dd-item" href="/campgrounds" role="menuitem">
                         <i class="fas fa-campground"></i> All Campgrounds
+                    </a>
+                    <a class="nav-dd-item" href="/bookings" role="menuitem">
+                        <i class="fas fa-calendar-check"></i> My Bookings
+                    </a>
+                    <a class="nav-dd-item" href="/bookings/calendar" role="menuitem">
+                        <i class="fas fa-calendar-alt"></i> Booking Calendar
+                    </a>
+                    <a class="nav-dd-item" href="/cart" role="menuitem">
+                        <i class="fas fa-shopping-cart"></i> My Cart
+                        <% if(cartCount > 0) { %><span class="cart-badge ms-auto"><%= cartCount %></span><% } %>
                     </a>
                     <div class="nav-dd-divider"></div>
                     <a class="nav-dd-item nav-dd-danger" href="/logout" role="menuitem">
@@ -65,6 +80,9 @@
         <a class="nav-mob-lnk" href="/campgrounds">Explore</a>
         <% if(currentUser) { %>
         <a class="nav-mob-lnk" href="/campgrounds/new">New Campground</a>
+        <a class="nav-mob-lnk" href="/bookings"><i class="fas fa-calendar-check me-2"></i>My Bookings</a>
+        <a class="nav-mob-lnk" href="/bookings/calendar"><i class="fas fa-calendar-alt me-2"></i>Booking Calendar</a>
+        <a class="nav-mob-lnk" href="/cart"><i class="fas fa-shopping-cart me-2"></i>My Cart<% if(cartCount > 0) { %> <span class="cart-badge ms-1"><%= cartCount %></span><% } %></a>
         <hr class="nav-mob-hr">
         <a class="nav-mob-lnk" href="/logout">Sign out</a>
         <% } else { %>

@@ -35,4 +35,11 @@ module.exports.logout = (req, res) => {
     req.logout();
     req.flash('success', 'Goodbye!');
     res.redirect('/campgrounds');
-}   
+}
+
+module.exports.googleCallback = (req, res) => {
+    req.flash('success', 'Welcome to CampEase!');
+    const redirectUrl = req.session.returnTo || '/campgrounds';
+    delete req.session.returnTo;
+    res.redirect(redirectUrl);
+};

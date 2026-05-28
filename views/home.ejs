@@ -16,7 +16,11 @@
             <a href="/campgrounds" class="btn-fill-lg">
                 <i class="fas fa-compass"></i> Explore Campgrounds
             </a>
+            <% if(!currentUser) { %>
             <a href="/register" class="btn-ghost-lg">Join for Free &rarr;</a>
+            <% } else { %>
+            <a href="/campgrounds/new" class="btn-ghost-lg"><i class="fas fa-plus-circle"></i> Add a Camp &rarr;</a>
+            <% } %>
         </div>
     </div>
     <!-- Scroll indicator -->
@@ -112,7 +116,11 @@
             <p>Join thousands of campers who use CampEase to plan unforgettable outdoor experiences.</p>
         </div>
         <div class="cta-btns">
+            <% if(!currentUser) { %>
             <a href="/register" class="btn-fill-lg">Create Free Account</a>
+            <% } else { %>
+            <a href="/bookings" class="btn-fill-lg"><i class="fas fa-calendar-check"></i> My Bookings</a>
+            <% } %>
             <a href="/campgrounds" class="btn-ghost-lg btn-ghost-light">Browse Campgrounds</a>
         </div>
     </div>

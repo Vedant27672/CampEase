@@ -1,0 +1,109 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="inner-hero">
+    <div class="inner-hero-content">
+        <h1 class="inner-hero-h1 reveal-up"><i class="fas fa-shopping-cart me-2"></i>My Cart</h1>
+        <p class="inner-hero-sub reveal-up" style="animation-delay:.1s">Review and confirm your campground reservations</p>
+    </div>
+</div>
+
+<div class="page-container">
+
+    <% if(cart.length === 0) { %>
+    <div class="bookings-empty">
+        <i class="fas fa-shopping-cart"></i>
+        <h4>Your cart is empty</h4>
+        <p>Browse campgrounds and add them to your cart to book multiple stays at once.</p>
+        <a href="/campgrounds" class="btn-fill">Explore Campgrounds</a>
+    </div>
+    <% } else { %>
+
+    <div class="cart-layout">
+
+        <!-- Cart items -->
+        <div class="cart-items">
+            <% for(let i = 0; i < cart.length; i++) { %>
+            <% const item = cart[i]; %>
+            <div class="cart-item-card reveal-up">
+                <div class="cart-item-img">
+                    <% if(item.thumbnail) { %>
+                    <img src="<%= item.thumbnail %>" alt="<%= item.campgroundTitle %>">
+                    <% } else { %>
+                    <div class="booking-card-no-img"><i class="fas fa-mountain"></i></div>
+                    <% } %>
+                </div>
+                <div class="cart-item-body">
+                    <div class="cart-item-header">
+                        <div>
+                            <h4 class="cart-item-title"><%= item.campgroundTitle %></h4>
+                            <div class="booking-camp-loc"><i class="fas fa-map-marker-alt"></i> <%= item.location %></div>
+                        </div>
+                        <form action="/cart/remove/<%= i %>?_method=POST" method="POST">
+                            <button type="submit" class="cart-remove-btn" title="Remove from cart">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="booking-dates-row" style="margin-top:.75rem">
+                        <div class="booking-date-block">
+                            <span class="booking-date-label">Check-in</span>
+                            <span class="booking-date-val"><%=
+                                new Date(item.checkIn).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+                            %></span>
+                        </div>
+                        <div class="booking-dates-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="booking-date-block">
+                            <span class="booking-date-label">Check-out</span>
+                            <span class="booking-date-val"><%=
+                                new Date(item.checkOut).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+                            %></span>
+                        </div>
+                    </div>
+                    <div class="booking-meta-row" style="margin-top:.6rem">
+                        <span><i class="fas fa-moon"></i> <%= item.nights %> night<%= item.nights !== 1 ? 's' : '' %></span>
+                        <span><i class="fas fa-users"></i> <%= item.guests %> guest<%= item.guests !== 1 ? 's' : '' %></span>
+                        <span><i class="fas fa-dollar-sign"></i> $<%= item.price %>/night</span>
+                        <strong class="booking-total">$<%= item.itemTotal.toFixed(2) %></strong>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+
+        <!-- Order summary -->
+        <div class="cart-summary-card reveal-up" style="animation-delay:.1s">
+            <h4 class="cart-summary-heading"><i class="fas fa-receipt"></i> Order Summary</h4>
+
+            <div class="cart-summary-lines">
+                <% for(let item of cart) { %>
+                <div class="cart-summary-line">
+                    <span><%= item.campgroundTitle %><br><small><%= item.nights %> night<%= item.nights!==1?'s':'' %></small></span>
+                    <span>$<%= item.itemTotal.toFixed(2) %></span>
+                </div>
+                <% } %>
+            </div>
+
+            <div class="cart-summary-divider"></div>
+            <div class="cart-summary-total">
+                <span>Total</span>
+                <strong>$<%= grandTotal.toFixed(2) %></strong>
+            </div>
+
+            <form action="/cart/checkout" method="POST" style="margin-top:1.25rem">
+                <button type="submit" class="btn-fill" style="width:100%;justify-content:center;padding:.8rem">
+                    <i class="fas fa-check-circle"></i> Confirm All Bookings
+                </button>
+            </form>
+
+            <a href="/campgrounds" class="btn-outline" style="width:100%;justify-content:center;margin-top:.6rem">
+                <i class="fas fa-plus"></i> Add More Camps
+            </a>
+
+            <p style="font-size:.75rem;color:var(--text-muted);text-align:center;margin-top:1rem">
+                <i class="fas fa-shield-alt"></i> Dates are conflict-checked at checkout
+            </p>
+        </div>
+
+    </div>
+    <% } %>
+</div>

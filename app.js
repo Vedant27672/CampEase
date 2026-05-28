@@ -12,12 +12,14 @@ const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('./models/user');
-
 
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
+const bookingRoutes = require('./routes/bookings');
+const cartRoutes = require('./routes/cart');
 const db_url = process.env.atlas_URL;
 const MongoDBStore = require('connect-mongo');
 
@@ -46,7 +48,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 const store = new MongoDBStore({
     mongoUrl: db_url,
-    secret: 'thisshouldbeabettersecret',
+    secret: process.env.SESSION_SECRET || 'campease-session-secret',
     touchAfter: 24 * 60 * 60
 });
 
@@ -55,7 +57,7 @@ store.on("error", function (e) {
 });
 const sessionConfig = {
     store,
-    secret: 'thisshouldbeabettersecret!',
+    secret: process.env.SESSION_SECRET || 'campease-session-secret',
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -72,6 +74,36 @@ app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+passport.use(new GoogleStrategy({
+    clientID:     process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL:  process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3000/auth/google/callback'
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        let user = await User.findOne({ googleId: profile.id });
+        if (user) return done(null, user);
+
+        // Link existing local account if same email
+        user = await User.findOne({ email: profile.emails[0].value });
+        if (user) {
+            user.googleId = profile.id;
+            await user.save();
+            return done(null, user);
+        }
+
+        // New Google-only user — derive a unique username
+        const baseUsername = (profile.displayName || 'user').replace(/\s+/g, '').toLowerCase();
+        const username = baseUsername + '_' + profile.id.slice(-4);
+        user = new User({ googleId: profile.id, email: profile.emails[0].value, username });
+        await user.save();
+        return done(null, user);
+    } catch (err) {
+        return done(err);
+    }
+}));
+} // end if GOOGLE_CLIENT_ID
+
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
@@ -80,13 +112,16 @@ app.use((req, res, next) => {
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     res.locals.mapTilerToken = process.env.MAPTILER_TOKEN;
+    res.locals.cartCount = (req.session.cart || []).length;
     next();
 })
 
 
 app.use('/', userRoutes);
-app.use('/campgrounds', campgroundRoutes)
-app.use('/campgrounds/:id/reviews', reviewRoutes)
+app.use('/', cartRoutes);
+app.use('/', bookingRoutes);
+app.use('/campgrounds', campgroundRoutes);
+app.use('/campgrounds/:id/reviews', reviewRoutes);
 
 
 app.get('/', (req, res) => {

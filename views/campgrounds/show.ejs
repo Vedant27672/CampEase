@@ -1,5 +1,7 @@
 <% layout('layouts/boilerplate') %>
 <% block('pageStyles').append('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4/dist/maplibre-gl.css">') %>
+<% block('pageStyles').append('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">') %>
+
 
 <div class="page-container show-page">
 
@@ -105,8 +107,92 @@
 
         </div>
 
-        <!-- ══ RIGHT: Reviews ══════════════════════════════════════ -->
+        <!-- ══ RIGHT: Booking + Reviews ═══════════════════════════ -->
         <div class="show-right">
+
+            <!-- ── Booking Widget ──────────────────────────────────── -->
+            <div class="booking-widget-card reveal-up">
+                <div class="booking-widget-header">
+                    <div>
+                        <span class="booking-widget-price">$<%= campground.price %></span>
+                        <span class="booking-widget-per-night">/ night</span>
+                    </div>
+                    <% if(currentUser) { %>
+                    <a href="/cart" class="btn-outline btn-sm" title="View cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <% if(cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %>
+                    </a>
+                    <% } %>
+                </div>
+
+                <% if(currentUser) { %>
+                <form action="/cart/add" method="POST" class="booking-widget-form" id="bookingForm">
+                    <input type="hidden" name="campgroundId" value="<%= campground._id %>">
+
+                    <div class="booking-dates-grid">
+                        <div class="booking-field">
+                            <label class="field-label"><i class="fas fa-sign-in-alt"></i> Check-in</label>
+                            <input type="text" id="checkIn" name="booking[checkIn]"
+                                class="field-input" placeholder="Select date" readonly required>
+                        </div>
+                        <div class="booking-field">
+                            <label class="field-label"><i class="fas fa-sign-out-alt"></i> Check-out</label>
+                            <input type="text" id="checkOut" name="booking[checkOut]"
+                                class="field-input" placeholder="Select date" readonly required>
+                        </div>
+                    </div>
+
+                    <div class="booking-field" style="margin-top:.8rem">
+                        <label class="field-label"><i class="fas fa-users"></i> Guests</label>
+                        <input type="number" name="booking[guests]" class="field-input"
+                            value="1" min="1" max="20">
+                    </div>
+
+                    <!-- Price summary (shown after dates selected) -->
+                    <div class="booking-summary" id="bookingSummary" style="display:none">
+                        <div class="booking-summary-row">
+                            <span id="nightsLabel">0 nights</span>
+                            <span id="priceCalc">$0</span>
+                        </div>
+                        <div class="booking-summary-divider"></div>
+                        <div class="booking-summary-row booking-summary-total">
+                            <strong>Total</strong>
+                            <strong id="totalPrice">$0</strong>
+                        </div>
+                    </div>
+
+                    <div class="booking-widget-actions">
+                        <button type="submit" class="btn-fill" style="flex:1;justify-content:center">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                        <button type="submit" form="bookNowForm" class="btn-outline" style="flex:1;justify-content:center">
+                            <i class="fas fa-bolt"></i> Book Now
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Separate hidden form for "Book Now" that posts directly to bookings -->
+                <form id="bookNowForm" action="/campgrounds/<%= campground._id %>/bookings" method="POST" style="display:none">
+                    <input type="hidden" name="booking[checkIn]" id="bookNowCheckIn">
+                    <input type="hidden" name="booking[checkOut]" id="bookNowCheckOut">
+                    <input type="hidden" name="booking[guests]" id="bookNowGuests" value="1">
+                </form>
+
+                <% } else { %>
+                <div class="booking-login-prompt">
+                    <i class="fas fa-lock"></i>
+                    <p>Sign in to book this campground</p>
+                    <a href="/login" class="btn-fill" style="width:100%;justify-content:center">
+                        <i class="fas fa-sign-in-alt"></i> Sign In to Book
+                    </a>
+                    <a href="/register" class="btn-outline" style="width:100%;justify-content:center;margin-top:.5rem">
+                        Create free account
+                    </a>
+                </div>
+                <% } %>
+
+                <p class="booking-no-charge-note"><i class="fas fa-shield-alt"></i> Free cancellation — no charges until confirmed</p>
+            </div>
 
             <!-- Review form -->
             <% if(currentUser) { %>
@@ -304,4 +390,67 @@ function showFSHint() {
     h.classList.add('visible');
     setTimeout(()=>h.classList.remove('visible'),4500);
 }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+// ── Flatpickr booking widget ──────────────────────────────────────
+const CAMP_PRICE   = <%= campground.price %>;
+const blockedDates = <%- JSON.stringify(confirmedBookings.map(b => ({ from: b.checkIn, to: b.checkOut }))) %>;
+
+const summaryEl   = document.getElementById('bookingSummary');
+const nightsEl    = document.getElementById('nightsLabel');
+const priceCalcEl = document.getElementById('priceCalc');
+const totalEl     = document.getElementById('totalPrice');
+
+function updateSummary(checkInDate, checkOutDate) {
+    if (!checkInDate || !checkOutDate) { summaryEl.style.display = 'none'; return; }
+    const nights = Math.round((checkOutDate - checkInDate) / 86400000);
+    if (nights <= 0) { summaryEl.style.display = 'none'; return; }
+    const total = (nights * CAMP_PRICE).toFixed(2);
+    nightsEl.textContent    = `${nights} night${nights !== 1 ? 's' : ''} × $${CAMP_PRICE}`;
+    priceCalcEl.textContent = `$${total}`;
+    totalEl.textContent     = `$${total}`;
+    summaryEl.style.display = 'block';
+    // Sync "Book Now" hidden form
+    const bnIn  = document.getElementById('bookNowCheckIn');
+    const bnOut = document.getElementById('bookNowCheckOut');
+    const bnG   = document.getElementById('bookNowGuests');
+    if (bnIn)  bnIn.value  = document.getElementById('checkIn').value;
+    if (bnOut) bnOut.value = document.getElementById('checkOut').value;
+    if (bnG)   bnG.value   = document.querySelector('[name="booking[guests]"]').value || 1;
+}
+
+let checkOutPicker;
+
+const checkInPicker = flatpickr('#checkIn', {
+    minDate:    'today',
+    disable:    blockedDates,
+    dateFormat: 'Y-m-d',
+    onChange:   function (selectedDates) {
+        if (!selectedDates[0]) return;
+        const minOut = new Date(selectedDates[0]);
+        minOut.setDate(minOut.getDate() + 1);
+        checkOutPicker.set('minDate', minOut);
+        checkOutPicker.clear();
+        summaryEl.style.display = 'none';
+    }
+});
+
+checkOutPicker = flatpickr('#checkOut', {
+    minDate:    'today',
+    disable:    blockedDates,
+    dateFormat: 'Y-m-d',
+    onChange:   function (selectedDates) {
+        const inDate  = checkInPicker.selectedDates[0];
+        const outDate = selectedDates[0];
+        updateSummary(inDate, outDate);
+    }
+});
+
+// Sync guests field to Book Now hidden form
+document.querySelector('[name="booking[guests]"]')?.addEventListener('input', function () {
+    const bnG = document.getElementById('bookNowGuests');
+    if (bnG) bnG.value = this.value;
+});
 </script>

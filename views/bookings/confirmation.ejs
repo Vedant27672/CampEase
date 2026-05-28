@@ -1,0 +1,78 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="page-container" style="max-width:680px">
+
+    <div class="confirmation-card reveal-up">
+        <!-- Header -->
+        <div class="confirmation-header">
+            <div class="confirmation-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2><%= booking.status === 'cancelled' ? 'Booking Cancelled' : 'Booking Confirmed!' %></h2>
+            <p><%= booking.status === 'cancelled' ? 'This reservation has been cancelled.' : 'Your stay is reserved. Get ready for an adventure!' %></p>
+        </div>
+
+        <!-- Campground info -->
+        <% if(booking.campground) { %>
+        <div class="confirmation-camp-row">
+            <% if(booking.campground.images && booking.campground.images.length > 0) { %>
+            <img src="<%= booking.campground.images[0].url %>" alt="<%= booking.campground.title %>" class="confirmation-thumb">
+            <% } %>
+            <div>
+                <h3 class="confirmation-camp-name"><%= booking.campground.title %></h3>
+                <div class="confirmation-camp-loc"><i class="fas fa-map-marker-alt"></i> <%= booking.campground.location %></div>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- Booking details table -->
+        <div class="confirmation-details">
+            <div class="confirmation-row">
+                <span class="conf-label"><i class="fas fa-sign-in-alt"></i> Check-in</span>
+                <span class="conf-val"><%= booking.checkIn.toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric',year:'numeric'}) %></span>
+            </div>
+            <div class="confirmation-row">
+                <span class="conf-label"><i class="fas fa-sign-out-alt"></i> Check-out</span>
+                <span class="conf-val"><%= booking.checkOut.toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric',year:'numeric'}) %></span>
+            </div>
+            <div class="confirmation-row">
+                <span class="conf-label"><i class="fas fa-moon"></i> Duration</span>
+                <span class="conf-val"><%= booking.nights %> night<%= booking.nights !== 1 ? 's' : '' %></span>
+            </div>
+            <div class="confirmation-row">
+                <span class="conf-label"><i class="fas fa-users"></i> Guests</span>
+                <span class="conf-val"><%= booking.guests %></span>
+            </div>
+            <div class="confirmation-row confirmation-row-total">
+                <span class="conf-label"><i class="fas fa-receipt"></i> Total</span>
+                <span class="conf-val conf-total">$<%= booking.totalPrice.toFixed(2) %></span>
+            </div>
+            <div class="confirmation-row">
+                <span class="conf-label"><i class="fas fa-info-circle"></i> Status</span>
+                <span class="booking-status-badge <%= booking.status === 'confirmed' ? 'badge-confirmed' : 'badge-cancelled' %>">
+                    <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                </span>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="confirmation-actions">
+            <a href="/bookings" class="btn-fill">
+                <i class="fas fa-calendar-check"></i> All Bookings
+            </a>
+            <% if(booking.campground) { %>
+            <a href="/campgrounds/<%= booking.campground._id %>" class="btn-outline">
+                <i class="fas fa-campground"></i> View Campground
+            </a>
+            <% } %>
+            <% if(booking.status === 'confirmed' && booking.checkIn > new Date()) { %>
+            <form action="/bookings/<%= booking._id %>/cancel" method="POST"
+                onsubmit="return confirm('Cancel this booking?')">
+                <button type="submit" class="btn-danger-outline">
+                    <i class="fas fa-times"></i> Cancel Booking
+                </button>
+            </form>
+            <% } %>
+        </div>
+    </div>
+</div>

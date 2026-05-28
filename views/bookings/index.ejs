@@ -1,0 +1,166 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="inner-hero">
+    <div class="inner-hero-content">
+        <h1 class="inner-hero-h1 reveal-up"><i class="fas fa-calendar-check me-2"></i>My Bookings</h1>
+        <p class="inner-hero-sub reveal-up" style="animation-delay:.1s">Manage your campground reservations</p>
+    </div>
+</div>
+
+<div class="page-container">
+
+    <!-- Header actions -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem">
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+            <a href="/bookings/calendar" class="btn-outline">
+                <i class="fas fa-calendar-alt"></i> Calendar View
+            </a>
+            <a href="/campgrounds" class="btn-fill">
+                <i class="fas fa-compass"></i> Explore More
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="booking-tabs" id="bookingTabs" role="tablist">
+        <li><button class="booking-tab active" data-tab="upcoming" role="tab">
+            <i class="fas fa-clock"></i> Upcoming
+            <span class="tab-count"><%= upcoming.length %></span>
+        </button></li>
+        <li><button class="booking-tab" data-tab="past" role="tab">
+            <i class="fas fa-history"></i> Past & Cancelled
+            <span class="tab-count"><%= past.length %></span>
+        </button></li>
+    </ul>
+
+    <!-- Upcoming bookings -->
+    <div class="booking-tab-pane" id="tab-upcoming">
+        <% if(upcoming.length === 0) { %>
+        <div class="bookings-empty">
+            <i class="fas fa-campground"></i>
+            <h4>No upcoming bookings</h4>
+            <p>Browse campgrounds and plan your next adventure!</p>
+            <a href="/campgrounds" class="btn-fill">Explore Campgrounds</a>
+        </div>
+        <% } else { %>
+        <div class="bookings-list">
+            <% for(let b of upcoming) { %>
+            <% if(!b.campground) continue; %>
+            <div class="booking-card reveal-up">
+                <div class="booking-card-img">
+                    <% if(b.campground.images && b.campground.images.length > 0) { %>
+                    <img src="<%= b.campground.images[0].url %>" alt="<%= b.campground.title %>">
+                    <% } else { %>
+                    <div class="booking-card-no-img"><i class="fas fa-mountain"></i></div>
+                    <% } %>
+                    <span class="booking-status-badge badge-confirmed">Confirmed</span>
+                </div>
+                <div class="booking-card-body">
+                    <h3 class="booking-camp-title"><%= b.campground.title %></h3>
+                    <div class="booking-camp-loc"><i class="fas fa-map-marker-alt"></i> <%= b.campground.location %></div>
+                    <div class="booking-dates-row">
+                        <div class="booking-date-block">
+                            <span class="booking-date-label">Check-in</span>
+                            <span class="booking-date-val"><%= b.checkIn.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %></span>
+                        </div>
+                        <div class="booking-dates-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="booking-date-block">
+                            <span class="booking-date-label">Check-out</span>
+                            <span class="booking-date-val"><%= b.checkOut.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %></span>
+                        </div>
+                    </div>
+                    <div class="booking-meta-row">
+                        <span><i class="fas fa-moon"></i> <%= b.nights %> night<%= b.nights !== 1 ? 's' : '' %></span>
+                        <span><i class="fas fa-users"></i> <%= b.guests %> guest<%= b.guests !== 1 ? 's' : '' %></span>
+                        <span class="booking-total"><i class="fas fa-dollar-sign"></i> $<%= b.totalPrice.toFixed(2) %></span>
+                    </div>
+                    <div class="booking-card-actions">
+                        <a href="/campgrounds/<%= b.campground._id %>" class="btn-outline btn-sm">
+                            <i class="fas fa-eye"></i> View Camp
+                        </a>
+                        <a href="/bookings/<%= b._id %>" class="btn-fill btn-sm">
+                            <i class="fas fa-receipt"></i> Details
+                        </a>
+                        <form action="/bookings/<%= b._id %>/cancel" method="POST" style="display:inline"
+                            onsubmit="return confirm('Cancel this booking? This cannot be undone.')">
+                            <button type="submit" class="btn-danger-outline btn-sm">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+        <% } %>
+    </div>
+
+    <!-- Past & Cancelled -->
+    <div class="booking-tab-pane" id="tab-past" style="display:none">
+        <% if(past.length === 0) { %>
+        <div class="bookings-empty">
+            <i class="fas fa-history"></i>
+            <h4>No past bookings</h4>
+            <p>Your completed stays will appear here.</p>
+        </div>
+        <% } else { %>
+        <div class="bookings-list">
+            <% for(let b of past) { %>
+            <% if(!b.campground) continue; %>
+            <div class="booking-card reveal-up" style="opacity:<%= b.status==='cancelled' ? '.7' : '1' %>">
+                <div class="booking-card-img">
+                    <% if(b.campground.images && b.campground.images.length > 0) { %>
+                    <img src="<%= b.campground.images[0].url %>" alt="<%= b.campground.title %>">
+                    <% } else { %>
+                    <div class="booking-card-no-img"><i class="fas fa-mountain"></i></div>
+                    <% } %>
+                    <span class="booking-status-badge <%= b.status==='cancelled' ? 'badge-cancelled' : 'badge-completed' %>">
+                        <%= b.status === 'cancelled' ? 'Cancelled' : 'Completed' %>
+                    </span>
+                </div>
+                <div class="booking-card-body">
+                    <h3 class="booking-camp-title"><%= b.campground.title %></h3>
+                    <div class="booking-camp-loc"><i class="fas fa-map-marker-alt"></i> <%= b.campground.location %></div>
+                    <div class="booking-dates-row">
+                        <div class="booking-date-block">
+                            <span class="booking-date-label">Check-in</span>
+                            <span class="booking-date-val"><%= b.checkIn.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %></span>
+                        </div>
+                        <div class="booking-dates-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="booking-date-block">
+                            <span class="booking-date-label">Check-out</span>
+                            <span class="booking-date-val"><%= b.checkOut.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %></span>
+                        </div>
+                    </div>
+                    <div class="booking-meta-row">
+                        <span><i class="fas fa-moon"></i> <%= b.nights %> night<%= b.nights !== 1 ? 's' : '' %></span>
+                        <span><i class="fas fa-users"></i> <%= b.guests %> guest<%= b.guests !== 1 ? 's' : '' %></span>
+                        <span class="booking-total"><i class="fas fa-dollar-sign"></i> $<%= b.totalPrice.toFixed(2) %></span>
+                    </div>
+                    <div class="booking-card-actions">
+                        <a href="/campgrounds/<%= b.campground._id %>" class="btn-outline btn-sm">
+                            <i class="fas fa-eye"></i> View Camp
+                        </a>
+                        <a href="/bookings/<%= b._id %>" class="btn-fill btn-sm">
+                            <i class="fas fa-receipt"></i> Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+        <% } %>
+    </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.booking-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        document.querySelectorAll('.booking-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.booking-tab-pane').forEach(p => p.style.display = 'none');
+        this.classList.add('active');
+        document.getElementById('tab-' + this.dataset.tab).style.display = 'block';
+    });
+});
+</script>

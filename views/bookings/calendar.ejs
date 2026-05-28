@@ -1,0 +1,63 @@
+<% layout('layouts/boilerplate') %>
+<% block('pageStyles').append('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css">') %>
+
+<div class="inner-hero">
+    <div class="inner-hero-content">
+        <h1 class="inner-hero-h1 reveal-up"><i class="fas fa-calendar-alt me-2"></i>Booking Calendar</h1>
+        <p class="inner-hero-sub reveal-up" style="animation-delay:.1s">Your campground stays at a glance</p>
+    </div>
+</div>
+
+<div class="page-container">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem">
+        <a href="/bookings" class="back-link" style="margin-bottom:0">
+            <i class="fas fa-arrow-left"></i> All Bookings
+        </a>
+        <a href="/campgrounds" class="btn-fill">
+            <i class="fas fa-compass"></i> Explore More
+        </a>
+    </div>
+
+    <div class="calendar-card reveal-up">
+        <div id="bookingCalendar"></div>
+    </div>
+
+    <% if(calendarEvents.length === 0) { %>
+    <div class="bookings-empty" style="margin-top:2rem">
+        <i class="fas fa-calendar-times"></i>
+        <h4>No bookings to display</h4>
+        <p>Book a campground and it will appear here on the calendar.</p>
+        <a href="/campgrounds" class="btn-fill">Explore Campgrounds</a>
+    </div>
+    <% } %>
+
+</div>
+
+<% block('pageScripts').append('<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"><\/script>') %>
+<script>
+const calendarEvents = <%- JSON.stringify(calendarEvents) %>;
+
+document.addEventListener('DOMContentLoaded', function () {
+    const el = document.getElementById('bookingCalendar');
+    if (!el) return;
+    const calendar = new FullCalendar.Calendar(el, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left:   'prev,next today',
+            center: 'title',
+            right:  'dayGridMonth,listMonth'
+        },
+        events: calendarEvents,
+        eventClick: function (info) {
+            info.jsEvent.preventDefault();
+            if (info.event.url) window.location.href = info.event.url;
+        },
+        eventDisplay: 'block',
+        height: 'auto',
+        dayMaxEvents: 3,
+        themeSystem: 'standard'
+    });
+    calendar.render();
+});
+</script>

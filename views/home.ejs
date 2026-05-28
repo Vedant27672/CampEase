@@ -32,23 +32,23 @@
 <!-- ═══ STATS STRIP ══════════════════════════════════════════ -->
 <div class="stats-strip">
     <div class="stat-item">
-        <span class="stat-num" data-target="1000">0</span><span class="stat-suffix">+</span>
+        <span class="stat-num" data-target="<%= stats.campgrounds %>">0</span>
         <span class="stat-label">Campgrounds</span>
     </div>
     <div class="stat-divider"></div>
     <div class="stat-item">
-        <span class="stat-num" data-target="5000">0</span><span class="stat-suffix">+</span>
+        <span class="stat-num" data-target="<%= stats.reviews %>">0</span>
         <span class="stat-label">Reviews</span>
     </div>
     <div class="stat-divider"></div>
     <div class="stat-item">
-        <span class="stat-num" data-target="2000">0</span><span class="stat-suffix">+</span>
+        <span class="stat-num" data-target="<%= stats.campers %>">0</span>
         <span class="stat-label">Campers</span>
     </div>
     <div class="stat-divider"></div>
     <div class="stat-item">
-        <span class="stat-num" data-target="50">0</span><span class="stat-suffix">+</span>
-        <span class="stat-label">States Covered</span>
+        <span class="stat-num" data-target="<%= stats.locations %>">0</span>
+        <span class="stat-label">Locations</span>
     </div>
 </div>
 
@@ -113,7 +113,7 @@
     <div class="cta-inner">
         <div class="cta-text">
             <h2>Ready for your next adventure?</h2>
-            <p>Join thousands of campers who use CampEase to plan unforgettable outdoor experiences.</p>
+            <p>Join <%= stats.campers %> campers who use CampEase to plan unforgettable outdoor experiences.</p>
         </div>
         <div class="cta-btns">
             <% if(!currentUser) { %>

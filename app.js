@@ -20,6 +20,8 @@ const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 const bookingRoutes = require('./routes/bookings');
 const cartRoutes = require('./routes/cart');
+const Campground = require('./models/campground');
+const Review = require('./models/review');
 const db_url = process.env.atlas_URL;
 const MongoDBStore = require('connect-mongo');
 
@@ -125,8 +127,21 @@ app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/reviews', reviewRoutes);
 
 
-app.get('/', (req, res) => {
-    res.render('home')
+app.get('/', async (req, res) => {
+    const [campgroundCount, reviewCount, userCount, locations] = await Promise.all([
+        Campground.countDocuments(),
+        Review.countDocuments(),
+        User.countDocuments(),
+        Campground.distinct('location')
+    ]);
+    res.render('home', {
+        stats: {
+            campgrounds: campgroundCount,
+            reviews:     reviewCount,
+            campers:     userCount,
+            locations:   locations.length
+        }
+    });
 });
 
 

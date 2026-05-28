@@ -1,9 +1,39 @@
-<% layout('layouts/boilerplate')%>
-<div class="row">
-    <div class="col-6 offset-3">
-        <div class="alert alert-danger" role="alert">
-            <h4 class="alert-heading"><%=err.message%></h4>
-            <p><%= err.stack %></p>
+<% layout('layouts/boilerplate') %>
+
+<div class="error-page-wrap">
+    <div class="error-card reveal-up">
+        <div class="error-icon">
+            <% if(err && err.status === 404) { %>
+            ⛺
+            <% } else { %>
+            <i class="fas fa-exclamation-triangle" style="color:var(--amber)"></i>
+            <% } %>
         </div>
+        <div class="error-code"><%= (err && err.status) ? err.status : 500 %></div>
+        <h2>
+            <% if(err && err.status === 404) { %>
+                Page Not Found
+            <% } else if(err && err.status === 403) { %>
+                Access Denied
+            <% } else { %>
+                Something Went Wrong
+            <% } %>
+        </h2>
+        <p><%= (err && err.message) ? err.message : 'An unexpected error occurred. Please try again.' %></p>
+        <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+            <a href="/" class="btn-fill">
+                <i class="fas fa-home"></i> Go Home
+            </a>
+            <a href="/campgrounds" class="btn-outline">
+                <i class="fas fa-campground"></i> Browse Camps
+            </a>
+        </div>
+
+        <% if(process && process.env && process.env.NODE_ENV !== 'production' && err && err.stack) { %>
+        <details style="margin-top:1.5rem;text-align:left">
+            <summary style="font-size:.78rem;color:var(--text-muted);cursor:pointer">Stack trace (dev only)</summary>
+            <pre style="font-size:.7rem;color:var(--red);background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-top:.5rem;overflow:auto;max-height:180px"><%= err.stack %></pre>
+        </details>
+        <% } %>
     </div>
 </div>

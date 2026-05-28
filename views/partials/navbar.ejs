@@ -1,27 +1,76 @@
-<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">CampEase</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <a class="nav-link" href="/">Home</a>
-                <a class="nav-link" href="/campgrounds">Campgrounds</a>
-                <a class="nav-link" href="/campgrounds/new">New Campground</a>
-            </div>
-            <div class="navbar-nav ml-auto">
-                <button id="theme-toggle" class="btn btn-outline-light btn-sm me-3" title="Toggle Dark Mode">
-                    <i class="fas fa-moon" id="theme-icon"></i>
+<header class="site-nav" id="siteNav">
+    <div class="nav-inner">
+
+        <!-- Brand -->
+        <a class="nav-brand" href="/">
+            <span class="nav-brand-icon">⛺</span>
+            <span class="nav-brand-text">CampEase</span>
+        </a>
+
+        <!-- Desktop links (centre) -->
+        <nav class="nav-links" aria-label="Main navigation">
+            <a class="nav-lnk" href="/">Home</a>
+            <a class="nav-lnk" href="/campgrounds">Explore</a>
+            <% if(currentUser) { %>
+            <a class="nav-lnk nav-lnk-add" href="/campgrounds/new">
+                <i class="fas fa-plus-circle"></i> New Camp
+            </a>
+            <% } %>
+        </nav>
+
+        <!-- Right actions -->
+        <div class="nav-actions">
+            <!-- Theme toggle -->
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle colour theme" title="Toggle dark mode">
+                <span class="t-sun"><i class="fas fa-sun"></i></span>
+                <span class="t-moon"><i class="fas fa-moon"></i></span>
+            </button>
+
+            <% if(!currentUser) { %>
+            <a class="btn-nav-ghost" href="/login">Sign in</a>
+            <a class="btn-nav-fill" href="/register">Get started</a>
+            <% } else { %>
+            <!-- User menu -->
+            <div class="nav-user" id="navUser">
+                <button class="nav-user-btn" id="navUserBtn" aria-expanded="false" aria-haspopup="true">
+                    <span class="nav-avatar"><%= currentUser.username.charAt(0).toUpperCase() %></span>
+                    <span class="nav-username"><%= currentUser.username %></span>
+                    <i class="fas fa-chevron-down nav-chevron"></i>
                 </button>
-                <% if(!currentUser) {%>
-                    <a class="nav-link" href="/login">Login</a>
-                    <a class="nav-link" href="/register">Register</a>
-                    <% } else {%>
-                        <a class="nav-link" href="/logout">Logout</a>
-                        <% } %>
+                <div class="nav-dropdown" id="navDropdown" role="menu">
+                    <a class="nav-dd-item" href="/campgrounds/new" role="menuitem">
+                        <i class="fas fa-plus-circle"></i> New Campground
+                    </a>
+                    <a class="nav-dd-item" href="/campgrounds" role="menuitem">
+                        <i class="fas fa-campground"></i> All Campgrounds
+                    </a>
+                    <div class="nav-dd-divider"></div>
+                    <a class="nav-dd-item nav-dd-danger" href="/logout" role="menuitem">
+                        <i class="fas fa-sign-out-alt"></i> Sign out
+                    </a>
+                </div>
             </div>
+            <% } %>
+
+            <!-- Mobile hamburger -->
+            <button class="nav-burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </div>
-</nav>
+
+    <!-- Mobile drawer -->
+    <div class="nav-mobile" id="navMobile" aria-hidden="true">
+        <a class="nav-mob-lnk" href="/">Home</a>
+        <a class="nav-mob-lnk" href="/campgrounds">Explore</a>
+        <% if(currentUser) { %>
+        <a class="nav-mob-lnk" href="/campgrounds/new">New Campground</a>
+        <hr class="nav-mob-hr">
+        <a class="nav-mob-lnk" href="/logout">Sign out</a>
+        <% } else { %>
+        <hr class="nav-mob-hr">
+        <a class="nav-mob-lnk" href="/login">Sign in</a>
+        <a class="nav-mob-lnk nav-mob-fill" href="/register">Get started</a>
+        <% } %>
+    </div>
+</header>

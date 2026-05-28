@@ -1,118 +1,307 @@
-<% layout('layouts/boilerplate')%>
-    <link rel="stylesheet" href="/stylesheets/stars.css">
+<% layout('layouts/boilerplate') %>
+<% block('pageStyles').append('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4/dist/maplibre-gl.css">') %>
 
-    <div class="row">
-        <div class="col-12 col-lg-6">
-            <div id="campgroundCarousel" class="carousel slide" data-ride="carousel">
+<div class="page-container show-page">
+
+    <!-- Back nav -->
+    <a href="/campgrounds" class="back-link reveal-up"><i class="fas fa-arrow-left"></i> All campgrounds</a>
+
+    <div class="show-grid">
+
+        <!-- ══ LEFT: Media + Info + Map ══════════════════════════ -->
+        <div class="show-left">
+
+            <!-- Carousel -->
+            <div id="campgroundCarousel" class="carousel slide show-carousel reveal-up" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    <% campground.images.forEach((img, i)=> {%>
-                        <div class="carousel-item <%= i===0 ? 'active' : '' %>">
-                            <img src="<%= img.url  %>" class="d-block w-100" alt="">
+                    <% if(campground.images && campground.images.length > 0) { %>
+                        <% campground.images.forEach((img,i) => { %>
+                        <div class="carousel-item <%= i===0?'active':'' %>">
+                            <img src="<%= img.url %>" class="show-carousel-img" alt="<%= campground.title %>">
                         </div>
                         <% }) %>
-
-                </div>
-                <% if(campground.images.length>1) {%>
-                    <a class="carousel-control-prev" href="#campgroundCarousel" role="button" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#campgroundCarousel" role="button" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                    <% } %>
-            </div>
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <%= campground.title%>
-                    </h5>
-                    <p class="card-text">
-                        <%= campground.description%>
-                    </p>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item text-muted">
-                        <%= campground.location%>
-                    </li>
-                    <li class="list-group-item text-muted">Submitted by <%= campground.author.username%>
-                    </li>
-                    <li class="list-group-item">$<%= campground.price%>/night</li>
-                </ul>
-                <% if(currentUser && campground.author.equals(currentUser._id)) {%>
-                    <div class="card-body">
-                        <a class="card-link btn btn-info" href="/campgrounds/<%=campground._id%>/edit">Edit</a>
-                        <form class="d-inline" action="/campgrounds/<%=campground._id%>?_method=DELETE" method="POST">
-                            <button class="btn btn-danger">Delete</button>
-                        </form>
+                    <% } else { %>
+                    <div class="carousel-item active">
+                        <div class="show-carousel-img show-no-img">
+                            <i class="fas fa-mountain fa-3x"></i>
+                        </div>
                     </div>
                     <% } %>
-                        <div class="card-footer text-muted">
-                            2 days ago
-                        </div>
+                </div>
+                <% if(campground.images && campground.images.length > 1) { %>
+                <div class="carousel-indicators">
+                    <% campground.images.forEach((img,i) => { %>
+                    <button type="button" data-bs-target="#campgroundCarousel" data-bs-slide-to="<%= i %>"
+                        class="<%= i===0?'active':'' %>" aria-label="Slide <%= i+1 %>"></button>
+                    <% }) %>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span><span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span><span class="visually-hidden">Next</span>
+                </button>
+                <% } %>
+            </div>
+
+            <!-- Info card -->
+            <div class="show-info-card reveal-up" style="animation-delay:.1s">
+                <div class="show-info-top">
+                    <div>
+                        <h1 class="show-title"><%= campground.title %></h1>
+                        <div class="show-location"><i class="fas fa-map-marker-alt"></i><%= campground.location %></div>
+                    </div>
+                    <div class="show-price-block">
+                        <span class="show-price">$<%= campground.price %></span>
+                        <span class="show-per-night">/ night</span>
+                    </div>
+                </div>
+
+                <% if(campground.reviews && campground.reviews.length > 0) {
+                    const avg = (campground.reviews.reduce((a,r)=>a+r.rating,0)/campground.reviews.length).toFixed(1); %>
+                <div class="show-avg-rating">
+                    <% for(let s=1;s<=5;s++) { %>
+                    <i class="fas fa-star <%= s<=Math.round(avg)?'star-filled':'star-empty' %>"></i>
+                    <% } %>
+                    <strong><%= avg %></strong>
+                    <span>(<%= campground.reviews.length %> review<%= campground.reviews.length!==1?'s':'' %>)</span>
+                </div>
+                <% } %>
+
+                <p class="show-desc"><%= campground.description %></p>
+
+                <div class="show-meta-row">
+                    <div class="show-meta-item">
+                        <i class="fas fa-user-circle"></i>
+                        <span>by <strong><%= campground.author.username %></strong></span>
+                    </div>
+                </div>
+
+                <% if(currentUser && campground.author.equals(currentUser._id)) { %>
+                <div class="show-owner-actions">
+                    <a href="/campgrounds/<%= campground._id %>/edit" class="btn-outline btn-sm">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <form action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST" style="display:inline">
+                        <button type="submit" class="btn-danger-outline btn-sm"
+                            onclick="return confirm('Delete this campground permanently?')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </form>
+                </div>
+                <% } %>
+            </div>
+
+            <!-- Map card -->
+            <div class="show-map-card reveal-up" style="animation-delay:.2s">
+                <div class="show-map-card-header">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <strong>Location</strong>
+                    <span class="show-map-loc-text"><%= campground.location %></span>
+                    <span class="show-map-fs-hint"><i class="fas fa-expand-arrows-alt"></i> Fullscreen shows all camps</span>
+                </div>
+                <div id="show-camp-map" class="show-map-canvas"></div>
             </div>
 
         </div>
-        <div class="col-12 col-lg-6">
-            <% if(currentUser) {%>
-                <h2>Leave a Review</h2>
-                <form action="/campgrounds/<%=campground._id%>/reviews" method="POST" class="mb-3 validated-form"
-                    novalidate>
-                    <!-- <div class="mb-3">
-                        <label class="form-label" for="rating">Rating</label>
-                        <input class="form-range" type="range" min="1" max="5" name="review[rating]" id="rating">
-                    </div> -->
+
+        <!-- ══ RIGHT: Reviews ══════════════════════════════════════ -->
+        <div class="show-right">
+
+            <!-- Review form -->
+            <% if(currentUser) { %>
+            <div class="review-form-card reveal-up">
+                <h3 class="review-form-heading"><i class="fas fa-pen"></i> Write a Review</h3>
+                <form action="/campgrounds/<%= campground._id %>/reviews" method="POST" class="validated-form" novalidate>
                     <div class="mb-3">
+                        <label class="field-label">Rating</label>
                         <fieldset class="starability-basic">
-                            <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1"
-                                checked aria-label="No rating." />
-                            <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-                            <label for="first-rate1" title="Terrible">1 star</label>
-                            <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-                            <label for="first-rate2" title="Not good">2 stars</label>
-                            <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-                            <label for="first-rate3" title="Average">3 stars</label>
-                            <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-                            <label for="first-rate4" title="Very good">4 stars</label>
-                            <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-                            <label for="first-rate5" title="Amazing">5 stars</label>
+                            <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating."/>
+                            <input type="radio" id="first-rate1" name="review[rating]" value="1"/><label for="first-rate1" title="Terrible">1 star</label>
+                            <input type="radio" id="first-rate2" name="review[rating]" value="2"/><label for="first-rate2" title="Not good">2 stars</label>
+                            <input type="radio" id="first-rate3" name="review[rating]" value="3"/><label for="first-rate3" title="Average">3 stars</label>
+                            <input type="radio" id="first-rate4" name="review[rating]" value="4"/><label for="first-rate4" title="Very good">4 stars</label>
+                            <input type="radio" id="first-rate5" name="review[rating]" value="5"/><label for="first-rate5" title="Amazing">5 stars</label>
                         </fieldset>
                     </div>
-
                     <div class="mb-3">
-                        <label class="form-label" for="body">Review Text</label>
-                        <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3"
-                            required></textarea>
-                        <div class="valid-feedback">
-                            Looks good!
-                        </div>
+                        <label class="field-label" for="body">Your thoughts</label>
+                        <textarea class="field-input" name="review[body]" id="body" rows="4"
+                            placeholder="Describe your experience, facilities, accessibility…" required></textarea>
+                        <div class="invalid-feedback">Please write your review.</div>
                     </div>
-                    <button class="btn btn-success">Submit</button>
+                    <button type="submit" class="btn-fill w-100">
+                        <i class="fas fa-paper-plane"></i> Submit Review
+                    </button>
                 </form>
-                <% } %>
-                    <% for(let review of campground.reviews) { %>
-                        <div class="card mb-3 ">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <%= review.author.username %>
-                                </h5>
-                                <p class="starability-result" data-rating="<%= review.rating %>">
-                                    Rated: <%= review.rating %> stars
-                                </p>
-                                <!-- <h6 class="card-subtitle mb-2 text-muted">by <%= review.author.username %> -->
-                                </h6>
-                                <p class="card-text">Review: <%= review.body %>
-                                </p>
-                                <% if(currentUser && review.author.equals(currentUser._id)) {%>
-                                    <form
-                                        action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE"
-                                        method="POST">
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
-                                    <% } %>
-                            </div>
+            </div>
+            <% } else { %>
+            <div class="review-login-prompt">
+                <i class="fas fa-lock fa-2x"></i>
+                <p>Sign in to leave a review</p>
+                <a href="/login" class="btn-fill">Sign In</a>
+            </div>
+            <% } %>
+
+            <!-- Reviews list -->
+            <% if(campground.reviews && campground.reviews.length > 0) { %>
+            <div class="reviews-header">
+                <h3><i class="fas fa-comments"></i> Reviews <span class="reviews-count"><%= campground.reviews.length %></span></h3>
+            </div>
+            <div class="reviews-list">
+                <% for(let review of campground.reviews) { %>
+                <div class="review-card reveal-up">
+                    <div class="review-card-top">
+                        <div class="reviewer-avatar"><%= review.author.username.charAt(0).toUpperCase() %></div>
+                        <div class="reviewer-info">
+                            <strong><%= review.author.username %></strong>
+                            <p class="starability-result" data-rating="<%= review.rating %>">Rated: <%= review.rating %> stars</p>
                         </div>
+                        <% if(currentUser && review.author.equals(currentUser._id)) { %>
+                        <form action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" class="ms-auto">
+                            <button type="submit" class="review-delete-btn"
+                                onclick="return confirm('Delete this review?')" title="Delete review">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
                         <% } %>
+                    </div>
+                    <p class="review-body"><%= review.body %></p>
+                </div>
+                <% } %>
+            </div>
+            <% } else { %>
+            <div class="reviews-empty">
+                <i class="fas fa-star"></i>
+                <p>No reviews yet — be the first!</p>
+            </div>
+            <% } %>
         </div>
     </div>
+</div>
+
+<!-- MapLibre -->
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4/dist/maplibre-gl.js"></script>
+<script>
+const MAPTILER_KEY       = '<%= mapTilerToken %>';
+const MAP_STYLE          = `https://api.maptiler.com/maps/outdoor-v2/style.json?key=${MAPTILER_KEY}`;
+const campgroundGeo      = <%- JSON.stringify(campground.geometry || null) %>;
+const campgroundTitle    = `<%= campground.title.replace(/`/g,'\\`').replace(/\$/g,'\\$') %>`;
+const campgroundLocation = `<%= campground.location.replace(/`/g,'\\`').replace(/\$/g,'\\$') %>`;
+const campgroundPrice    = '<%= campground.price %>';
+const currentCampId      = '<%= campground._id %>';
+const allCampFeatures    = <%- JSON.stringify(allCampFeatures) %>;
+
+let currentCoords = null, currentMarker = null, currentPopup = null, fsLayersReady = false;
+
+const map = new maplibregl.Map({
+    container: 'show-camp-map', style: MAP_STYLE,
+    center: [78.9629, 22.5937], zoom: 3, attributionControl: false
+});
+map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+map.addControl(new maplibregl.FullscreenControl(), 'top-right');
+map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
+
+function createMarkerEl() {
+    const el = document.createElement('div');
+    el.className = 'show-map-marker';
+    el.innerHTML = `<div class="show-marker-pin"><i class="fas fa-campground"></i></div><div class="show-marker-shadow"></div>`;
+    return el;
+}
+
+function placeMarker(coords) {
+    currentCoords = coords;
+    currentPopup = new maplibregl.Popup({ offset:[0,-40], closeButton:false, maxWidth:'230px' })
+        .setHTML(`<div class="map-popup"><strong>${campgroundTitle}</strong>
+            <div class="map-popup-loc"><i class="fas fa-map-marker-alt me-1 text-danger"></i>${campgroundLocation}</div>
+            <div class="map-popup-price"><i class="fas fa-dollar-sign me-1 text-success"></i><strong>$${campgroundPrice}</strong>/night</div></div>`);
+    currentMarker = new maplibregl.Marker({ element:createMarkerEl(), anchor:'bottom' })
+        .setLngLat(coords).setPopup(currentPopup).addTo(map);
+    map.flyTo({ center:coords, zoom:11, essential:true, duration:1200 });
+    currentPopup.addTo(map).setLngLat(coords);
+}
+
+async function initMarker() {
+    if (campgroundGeo?.coordinates?.length === 2) { placeMarker(campgroundGeo.coordinates); return; }
+    try {
+        const r = await fetch(`https://api.maptiler.com/geocoding/${encodeURIComponent(campgroundLocation)}.json?key=${MAPTILER_KEY}`);
+        const d = await r.json();
+        if (d.features?.length > 0) placeMarker(d.features[0].geometry.coordinates);
+    } catch(e) { console.warn('Geocoding failed',e); }
+}
+map.on('load', initMarker);
+
+['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange']
+    .forEach(e => document.addEventListener(e, onFSChange));
+
+function onFSChange() {
+    const isFS = !!(document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement||document.msFullscreenElement);
+    map.resize();
+    isFS ? enterFS() : exitFS();
+}
+
+function enterFS() {
+    if (currentMarker) currentMarker.getElement().style.display = 'none';
+    if (currentPopup)  currentPopup.remove();
+    if (!fsLayersReady) buildClusterLayers(); else showFSLayers(true);
+    fitAllCampBounds();
+    showFSHint();
+}
+
+function exitFS() {
+    showFSLayers(false);
+    if (currentMarker) currentMarker.getElement().style.display = '';
+    if (currentCoords) setTimeout(() => { map.flyTo({ center:currentCoords, zoom:11, essential:true, duration:900 }); if(currentPopup) currentPopup.addTo(map).setLngLat(currentCoords); }, 200);
+}
+
+function showFSLayers(visible) {
+    const v = visible ? 'visible' : 'none';
+    ['fs-clusters','fs-cluster-count','fs-points','fs-current-point'].forEach(id => { if(map.getLayer(id)) map.setLayoutProperty(id,'visibility',v); });
+}
+
+function buildClusterLayers() {
+    const other = { type:'FeatureCollection', features: allCampFeatures.filter(f => f.properties.id !== currentCampId) };
+    if (!map.getSource('fs-camps')) map.addSource('fs-camps', { type:'geojson', data:other, cluster:true, clusterMaxZoom:12, clusterRadius:50 });
+    map.addLayer({ id:'fs-clusters', type:'circle', source:'fs-camps', filter:['has','point_count'],
+        paint:{ 'circle-color':['step',['get','point_count'],'#2a7d3e',10,'#e8861c',30,'#8b5a3c'],
+                'circle-radius':['step',['get','point_count'],20,10,28,30,38],
+                'circle-stroke-width':3, 'circle-stroke-color':'#fff', 'circle-opacity':.92 }});
+    map.addLayer({ id:'fs-cluster-count', type:'symbol', source:'fs-camps', filter:['has','point_count'],
+        layout:{ 'text-field':'{point_count_abbreviated}', 'text-font':['Noto Sans Bold','Arial Unicode MS Bold'], 'text-size':13, 'text-allow-overlap':true },
+        paint:{ 'text-color':'#fff' }});
+    map.addLayer({ id:'fs-points', type:'circle', source:'fs-camps', filter:['!',['has','point_count']],
+        paint:{ 'circle-color':'#2a7d3e', 'circle-radius':10, 'circle-stroke-width':2.5, 'circle-stroke-color':'#fff' }});
+    if (currentCoords) {
+        if (!map.getSource('fs-current')) map.addSource('fs-current', { type:'geojson', data:{ type:'FeatureCollection', features:[{ type:'Feature', geometry:{ type:'Point', coordinates:currentCoords }, properties:{ title:campgroundTitle, location:campgroundLocation, price:campgroundPrice, id:currentCampId }}]}});
+        map.addLayer({ id:'fs-current-point', type:'circle', source:'fs-current', paint:{ 'circle-color':'#e8861c', 'circle-radius':13, 'circle-stroke-width':3, 'circle-stroke-color':'#fff' }});
+    }
+    const popup = (e, layer) => {
+        const p = e.features[0].properties, coords = e.features[0].geometry.coordinates.slice();
+        new maplibregl.Popup({ maxWidth:'250px' }).setLngLat(coords).setHTML(`<div class="map-popup">${p.id===currentCampId?'<span class="map-popup-current-badge">📍 You are here</span>':''}<strong>${p.title}</strong><div class="map-popup-loc"><i class="fas fa-map-marker-alt me-1 text-danger"></i>${p.location}</div><div class="map-popup-price"><i class="fas fa-dollar-sign me-1 text-success"></i><strong>$${p.price}</strong>/night</div><a href="/campgrounds/${p.id}" class="map-popup-link" target="_blank">View Campground →</a></div>`).addTo(map);
+    };
+    map.on('click','fs-clusters', async e => { const f=map.queryRenderedFeatures(e.point,{layers:['fs-clusters']}); try{ const z=await map.getSource('fs-camps').getClusterExpansionZoom(f[0].properties.cluster_id); map.easeTo({center:f[0].geometry.coordinates,zoom:z+1}); }catch(_){} });
+    map.on('click','fs-points', e => popup(e,'fs-points'));
+    map.on('click','fs-current-point', e => popup(e,'fs-current-point'));
+    ['fs-clusters','fs-points','fs-current-point'].forEach(l => { map.on('mouseenter',l,()=>map.getCanvas().style.cursor='pointer'); map.on('mouseleave',l,()=>map.getCanvas().style.cursor=''); });
+    fsLayersReady = true;
+}
+
+function fitAllCampBounds() {
+    const coords = allCampFeatures.filter(f=>f.geometry?.coordinates?.length===2).map(f=>f.geometry.coordinates);
+    if (currentCoords) coords.push(currentCoords);
+    if (!coords.length) return;
+    if (coords.length===1) { map.flyTo({center:coords[0],zoom:8}); return; }
+    const b = new maplibregl.LngLatBounds(coords[0],coords[0]);
+    coords.forEach(c=>b.extend(c));
+    map.fitBounds(b,{padding:{top:80,bottom:80,left:80,right:80},maxZoom:10,duration:1200});
+}
+
+function showFSHint() {
+    let h = document.getElementById('fs-hint');
+    if (!h) { h=document.createElement('div'); h.id='fs-hint'; h.className='fs-map-hint'; document.body.appendChild(h); }
+    const total = allCampFeatures.length+1;
+    h.innerHTML = `<i class="fas fa-campground me-2"></i>Showing all <strong>${total}</strong> campground${total!==1?'s':''} — click any pin to explore`;
+    h.classList.add('visible');
+    setTimeout(()=>h.classList.remove('visible'),4500);
+}
+</script>

@@ -1,29 +1,102 @@
-<% layout('layouts/boilerplate')%>
+<% layout('layouts/boilerplate') %>
 
-<h1>All Campgrounds</h1>
-<div class="mb-3">
-    <a href="/campgrounds/new" class="btn btn-success">Add Campground</a>
-</div>
-<% for (let campground of campgrounds){%>
-<div class="card" mb-3>
-    <div class="row">
-        <div class="col-md-4">
-            <% if(campground.images && campground.images.length > 0) { %>
-                <img class="img-fluid" alt="" src="<%=campground.images[0].url%>">
-            <% } else { %>
-                <img class="img-fluid" alt="" src="https://via.placeholder.com/400x300?text=No+Image">
-            <% } %>
-        </div>
-        <div class="col-md-8">
-            <div class="card-body">
-                <h5 class="card-title"><%= campground.title %> </h5>
-                <p class="card-text"><%= campground.description %></p>
-                <p class="card-text">
-                    <small class="text-muted"><%= campground.location%></small>
-                </p>
-                <a class="btn btn-primary" href="/campgrounds/<%=campground._id%>">View <%=campground.title%></a>
-            </div>
-        </div>
+<!-- Page header -->
+<div class="inner-hero">
+    <div class="inner-hero-content">
+        <h1 class="inner-hero-h1 reveal-up"><i class="fas fa-campground me-2"></i>All Campgrounds</h1>
+        <p class="inner-hero-sub reveal-up" style="animation-delay:.1s">Browse our handpicked collection of outdoor destinations</p>
     </div>
 </div>
-<% }%>
+
+<div class="page-container">
+
+    <!-- Toolbar -->
+    <div class="camps-toolbar reveal-up">
+        <div class="search-wrap">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="campSearch" class="search-input" placeholder="Search campgrounds or locations…" autocomplete="off">
+            <button class="search-clear" id="searchClear" aria-label="Clear search"><i class="fas fa-times"></i></button>
+        </div>
+        <% if(currentUser) { %>
+        <a href="/campgrounds/new" class="btn-fill">
+            <i class="fas fa-plus"></i> Add Campground
+        </a>
+        <% } else { %>
+        <a href="/login" class="btn-outline">
+            <i class="fas fa-sign-in-alt"></i> Sign in to add
+        </a>
+        <% } %>
+    </div>
+
+    <!-- Grid -->
+    <% if(campgrounds && campgrounds.length > 0) { %>
+    <div class="camps-grid" id="campsGrid">
+        <% for(let camp of campgrounds) { %>
+        <a class="camp-card" href="/campgrounds/<%= camp._id %>" data-title="<%= camp.title.toLowerCase() %>" data-loc="<%= camp.location.toLowerCase() %>">
+            <div class="camp-card-img-wrap">
+                <% if(camp.images && camp.images.length > 0) { %>
+                <img src="<%= camp.images[0].url %>" alt="<%= camp.title %>" class="camp-card-photo" loading="lazy">
+                <% } else { %>
+                <div class="camp-card-no-img"><i class="fas fa-mountain"></i></div>
+                <% } %>
+                <div class="camp-card-overlay">
+                    <span class="camp-view-btn">View Camp <i class="fas fa-arrow-right"></i></span>
+                </div>
+                <span class="camp-price-tag">$<%= camp.price %><small>/night</small></span>
+                <% if(camp.images && camp.images.length > 1) { %>
+                <span class="camp-photo-count"><i class="fas fa-images"></i> <%= camp.images.length %></span>
+                <% } %>
+            </div>
+            <div class="camp-card-body">
+                <h3 class="camp-card-title"><%= camp.title %></h3>
+                <div class="camp-card-loc"><i class="fas fa-map-marker-alt"></i><%= camp.location %></div>
+                <p class="camp-card-desc"><%= camp.description.length > 90 ? camp.description.slice(0,90)+'…' : camp.description %></p>
+            </div>
+        </a>
+        <% } %>
+    </div>
+
+    <div class="no-results" id="noResults">
+        <i class="fas fa-search-minus"></i>
+        <h4>No campgrounds match your search</h4>
+        <p>Try a different keyword or <button class="link-btn" onclick="document.getElementById('campSearch').value='';filterCamps()">clear the search</button>.</p>
+    </div>
+
+    <% } else { %>
+    <div class="empty-state">
+        <div class="empty-icon">⛺</div>
+        <h3>No campgrounds yet</h3>
+        <p>Be the first to share an amazing camping spot with the community.</p>
+        <% if(currentUser) { %>
+        <a href="/campgrounds/new" class="btn-fill">Add the First Campground</a>
+        <% } else { %>
+        <a href="/register" class="btn-fill">Join & Add a Campground</a>
+        <% } %>
+    </div>
+    <% } %>
+
+</div>
+
+<script>
+const grid      = document.getElementById('campsGrid');
+const noResults = document.getElementById('noResults');
+const searchIn  = document.getElementById('campSearch');
+const clearBtn  = document.getElementById('searchClear');
+
+function filterCamps() {
+    const q = searchIn ? searchIn.value.toLowerCase().trim() : '';
+    if (clearBtn) clearBtn.style.display = q ? 'flex' : 'none';
+    if (!grid) return;
+    let vis = 0;
+    grid.querySelectorAll('.camp-card').forEach(card => {
+        const match = card.dataset.title.includes(q) || card.dataset.loc.includes(q);
+        card.style.display = match ? '' : 'none';
+        if (match) vis++;
+    });
+    if (noResults) noResults.style.display = (vis === 0 && q) ? 'flex' : 'none';
+}
+
+if (searchIn) searchIn.addEventListener('input', filterCamps);
+if (clearBtn)  clearBtn.addEventListener('click', () => { searchIn.value = ''; filterCamps(); searchIn.focus(); });
+filterCamps();
+</script>

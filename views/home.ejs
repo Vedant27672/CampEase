@@ -1,86 +1,119 @@
 <% layout('layouts/boilerplate') %>
 
-<!-- Hero Section -->
-<section class="hero-section">
-    <div class="container">
-        <div class="hero-content">
-            <h1 class="hero-title">Welcome to CampEase</h1>
-            <p class="hero-subtitle">Discover and share amazing camping experiences with fellow outdoor enthusiasts</p>
-            <a href="/campgrounds" class="btn-hero">Explore Campgrounds</a>
+<!-- ═══ HERO ═══════════════════════════════════════════════════ -->
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="hero-badge reveal-up"><i class="fas fa-star"></i>&nbsp; Trusted by outdoor explorers</div>
+        <h1 class="hero-h1 reveal-up" style="animation-delay:.1s">
+            Find Your Next<br><span class="hero-gradient">Wild Escape</span>
+        </h1>
+        <p class="hero-sub reveal-up" style="animation-delay:.2s">
+            Discover handpicked campgrounds, read honest reviews from real campers,<br class="d-none d-lg-block">
+            and share your own adventures with a passionate outdoor community.
+        </p>
+        <div class="hero-btns reveal-up" style="animation-delay:.3s">
+            <a href="/campgrounds" class="btn-fill-lg">
+                <i class="fas fa-compass"></i> Explore Campgrounds
+            </a>
+            <a href="/register" class="btn-ghost-lg">Join for Free &rarr;</a>
         </div>
+    </div>
+    <!-- Scroll indicator -->
+    <div class="hero-scroll-indicator">
+        <div class="scroll-dot"></div>
     </div>
 </section>
 
-<!-- Features Section -->
+<!-- ═══ STATS STRIP ══════════════════════════════════════════ -->
+<div class="stats-strip">
+    <div class="stat-item">
+        <span class="stat-num" data-target="1000">0</span><span class="stat-suffix">+</span>
+        <span class="stat-label">Campgrounds</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+        <span class="stat-num" data-target="5000">0</span><span class="stat-suffix">+</span>
+        <span class="stat-label">Reviews</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+        <span class="stat-num" data-target="2000">0</span><span class="stat-suffix">+</span>
+        <span class="stat-label">Campers</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+        <span class="stat-num" data-target="50">0</span><span class="stat-suffix">+</span>
+        <span class="stat-label">States Covered</span>
+    </div>
+</div>
+
+<!-- ═══ FEATURES ════════════════════════════════════════════ -->
 <section class="features-section">
-    <div class="container">
-        <div class="row text-center mb-5">
-            <div class="col-12">
-                <h2 class="display-4 font-weight-bold text-dark mb-3">Why Choose CampEase?</h2>
-                <p class="lead text-muted">Your ultimate destination for camping adventures and reviews</p>
-            </div>
+    <div class="section-container">
+        <div class="section-header scroll-reveal">
+            <span class="section-tag">Why CampEase</span>
+            <h2 class="section-h2">Everything you need for the perfect trip</h2>
+            <p class="section-sub">Plan smarter, camp better — all in one place.</p>
         </div>
 
-        <div class="row">
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card loading scroll-reveal stagger-1 hover-lift">
-                    <div class="feature-icon animate-float">🏕️</div>
-                    <h3 class="feature-title">Discover Camps</h3>
-                    <p class="feature-description">Explore thousands of verified campgrounds with detailed reviews, photos, and ratings from real campers.</p>
+        <div class="features-grid">
+            <div class="feature-card scroll-reveal" style="--i:0">
+                <div class="feature-icon-wrap">
+                    <i class="fas fa-campground"></i>
                 </div>
+                <h3>Discover Camps</h3>
+                <p>Thousands of verified campgrounds with photos, ratings, and detailed info from real campers.</p>
             </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card loading scroll-reveal stagger-2 hover-lift">
-                    <div class="feature-icon animate-float">⭐</div>
-                    <h3 class="feature-title">Share Reviews</h3>
-                    <p class="feature-description">Rate and review your camping experiences to help others find the perfect spot for their adventure.</p>
+            <div class="feature-card scroll-reveal" style="--i:1">
+                <div class="feature-icon-wrap">
+                    <i class="fas fa-star"></i>
                 </div>
+                <h3>Honest Reviews</h3>
+                <p>Rate and review your stays to help the community find the best spots and avoid surprises.</p>
             </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card loading scroll-reveal stagger-3 hover-lift">
-                    <div class="feature-icon animate-float">📸</div>
-                    <h3 class="feature-title">Photo Gallery</h3>
-                    <p class="feature-description">Upload and browse beautiful campground photos to get a true sense of each location.</p>
+            <div class="feature-card scroll-reveal" style="--i:2">
+                <div class="feature-icon-wrap">
+                    <i class="fas fa-images"></i>
                 </div>
+                <h3>Photo Galleries</h3>
+                <p>Upload and browse beautiful campground photos to get a real feel before you pack your bags.</p>
             </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card loading scroll-reveal stagger-4 hover-lift">
-                    <div class="feature-icon animate-float">🗺️</div>
-                    <h3 class="feature-title">Location Based</h3>
-                    <p class="feature-description">Find campgrounds by location and discover new camping spots in your area or dream destinations.</p>
+            <div class="feature-card scroll-reveal" style="--i:3">
+                <div class="feature-icon-wrap">
+                    <i class="fas fa-map-marked-alt"></i>
                 </div>
+                <h3>Interactive Maps</h3>
+                <p>View every campground on a live outdoor map — zoom out to see all camps across the region.</p>
             </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card loading scroll-reveal stagger-5 hover-lift">
-                    <div class="feature-icon animate-float">💰</div>
-                    <h3 class="feature-title">Price Transparency</h3>
-                    <p class="feature-description">Know exactly what to expect with clear pricing information and honest reviews about value.</p>
+            <div class="feature-card scroll-reveal" style="--i:4">
+                <div class="feature-icon-wrap">
+                    <i class="fas fa-dollar-sign"></i>
                 </div>
+                <h3>Clear Pricing</h3>
+                <p>No surprises — see exactly what you'll pay per night before making any decisions.</p>
             </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card loading scroll-reveal stagger-6 hover-lift">
-                    <div class="feature-icon animate-float">👥</div>
-                    <h3 class="feature-title">Community Driven</h3>
-                    <p class="feature-description">Join a community of outdoor enthusiasts sharing tips, stories, and recommendations.</p>
+            <div class="feature-card scroll-reveal" style="--i:5">
+                <div class="feature-icon-wrap">
+                    <i class="fas fa-users"></i>
                 </div>
+                <h3>Community Driven</h3>
+                <p>Join explorers who share tips, stories, and recommendations for the best outdoor adventures.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Call to Action Section -->
-<section class="py-5" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white;">
-    <div class="container text-center">
-        <h2 class="display-5 font-weight-bold mb-4">Ready for Your Next Adventure?</h2>
-        <p class="lead mb-4">Join thousands of campers who trust CampEase for their outdoor planning</p>
-        <div class="d-flex justify-content-center gap-3 flex-wrap">
-            <a href="/register" class="btn btn-light btn-lg px-4 py-3 btn-animated interactive-element">Get Started</a>
-            <a href="/campgrounds" class="btn btn-outline-light btn-lg px-4 py-3 btn-animated interactive-element">Browse Camps</a>
+<!-- ═══ CTA BANNER ═══════════════════════════════════════════ -->
+<section class="cta-banner scroll-reveal">
+    <div class="cta-inner">
+        <div class="cta-text">
+            <h2>Ready for your next adventure?</h2>
+            <p>Join thousands of campers who use CampEase to plan unforgettable outdoor experiences.</p>
+        </div>
+        <div class="cta-btns">
+            <a href="/register" class="btn-fill-lg">Create Free Account</a>
+            <a href="/campgrounds" class="btn-ghost-lg btn-ghost-light">Browse Campgrounds</a>
         </div>
     </div>
 </section>

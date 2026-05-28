@@ -1,67 +1,140 @@
-<% layout('layouts/boilerplate')%>
-    <div class="row">
-        <h1 class="text-center">New Campground</h1>
-        <div class="col-6 offset-3">
-            <form action="/campgrounds" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label class="form-label" for="title">Title</label>
-                    <input class="form-control" type="text" id="title" name="campground[title]" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="location">Location</label>
-                    <input class="form-control" type="text" id="location" name="campground[location]" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-                
-                <!-- <input type="file" name="image" id="" multiple> -->
-                <!-- <div class="mb-3">
-                <label class="form-label" for="image">Image Url</label>
-                <input class="form-control" type="text" id="image" name="campground[image]" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-            </div> -->
-                <div class="mb-3">
-                    <label class="form-label" for="price">Campground Price</label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="price-label">$</span>
-                        <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price"
-                            aria-describedby="price-label" name="campground[price]" required>
-                    </div>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
+<% layout('layouts/boilerplate') %>
+<% block('pageStyles').append('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4/dist/maplibre-gl.css">') %>
 
-                <div class="mb-3">
-                    <label class="form-label" for="description">Description</label>
-                    <textarea class="form-control" type="text" id="description" name="campground[description]"
-                        required></textarea>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
+<div class="page-container">
+    <div class="form-page-wrap">
+        <div class="form-card reveal-up">
+            <div class="form-card-header">
+                <div class="form-card-icon"><i class="fas fa-campground"></i></div>
+                <h2>New Campground</h2>
+                <p>Share your favourite outdoor spot with the community</p>
+            </div>
+            <div class="form-card-body">
+                <form action="/campgrounds" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
 
-                <div class="mb-3">
-                    <!-- <label for="">Upload Images</label> -->
-                    <div class="form-file custom-file">
-                        <input type="file" name="image" class="form-file-input" id="image" multiple>
-                        <label for="image" class="form-file-label">
-                            <span class="form-file-text custom-file-label">Choose image(s)...</span>
-                            <span class="form-file-button">Browse</span>
-                        </label>
+                    <div class="field-group">
+                        <label class="field-label" for="title"><i class="fas fa-tag"></i> Title</label>
+                        <input class="field-input" type="text" id="title" name="campground[title]" placeholder="e.g. Pine Valley Campground" required>
+                        <div class="invalid-feedback">Please provide a title.</div>
                     </div>
-                </div>
 
-                <div class="mb-3">
-                    <button class="btn btn-success">Add Campground</button>
-                </div>
-            </form>
-            <a href="/campgrounds" class="btn btn-primary">All Campgrounds</a>
+                    <div class="field-group">
+                        <label class="field-label" for="location"><i class="fas fa-map-marker-alt"></i> Location</label>
+                        <div class="field-addon-wrap">
+                            <input class="field-input" type="text" id="location" name="campground[location]"
+                                placeholder="e.g. Yosemite, California" required autocomplete="off">
+                            <button type="button" class="field-addon-btn" id="geocodeBtn" title="Preview on map">
+                                <i class="fas fa-search-location"></i>
+                            </button>
+                        </div>
+                        <div class="invalid-feedback">Please provide a location.</div>
+                    </div>
+
+                    <!-- Live map -->
+                    <div class="map-preview-wrap field-group">
+                        <div id="new-camp-map" class="form-map-canvas"></div>
+                        <div class="map-status-bar" id="mapStatus">
+                            <i class="fas fa-info-circle"></i> <span id="mapStatusText">Type a location above to preview on the map</span>
+                        </div>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field-group">
+                            <label class="field-label" for="price"><i class="fas fa-dollar-sign"></i> Price / night</label>
+                            <div class="field-prefix-wrap">
+                                <span class="field-prefix">$</span>
+                                <input class="field-input" type="number" id="price" name="campground[price]" placeholder="0.00" min="0" step="0.01" required>
+                            </div>
+                            <div class="invalid-feedback">Please provide a price.</div>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label class="field-label" for="description"><i class="fas fa-align-left"></i> Description</label>
+                        <textarea class="field-input" id="description" name="campground[description]" rows="4"
+                            placeholder="Describe the campground, amenities, nearby activities…" required></textarea>
+                        <div class="invalid-feedback">Please add a description.</div>
+                    </div>
+
+                    <div class="field-group">
+                        <label class="field-label"><i class="fas fa-images"></i> Photos</label>
+                        <div class="upload-zone" id="uploadZone">
+                            <input type="file" name="image" id="imgInput" class="upload-input" multiple accept="image/*">
+                            <div class="upload-zone-inner">
+                                <i class="fas fa-cloud-upload-alt upload-zone-icon"></i>
+                                <div class="upload-zone-text">Click or drag photos here</div>
+                                <div class="upload-zone-sub" id="uploadSub">JPG, PNG, WEBP accepted</div>
+                            </div>
+                        </div>
+                        <div class="upload-previews row g-2 mt-2" id="imgPreviews"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-fill btn-lg-form">
+                            <i class="fas fa-plus-circle"></i> Add Campground
+                        </button>
+                        <a href="/campgrounds" class="btn-outline btn-lg-form">Cancel</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4/dist/maplibre-gl.js"></script>
+<script>
+const MAPTILER_KEY = '<%= mapTilerToken %>';
+const map = new maplibregl.Map({ container:'new-camp-map', style:`https://api.maptiler.com/maps/outdoor-v2/style.json?key=${MAPTILER_KEY}`, center:[78.9629,22.5937], zoom:3.5, attributionControl:false });
+map.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-right');
+
+const markerEl = document.createElement('div');
+markerEl.className = 'map-pulse-marker';
+markerEl.innerHTML = '<div class="pulse-dot"></div><div class="pulse-ring"></div>';
+const marker = new maplibregl.Marker({ element:markerEl, anchor:'center' });
+
+const statusText = document.getElementById('mapStatusText');
+function setStatus(msg, loading=false) {
+    statusText.innerHTML = loading ? `<span class="spinner-border spinner-border-sm me-1"></span>${msg}` : msg;
+}
+
+async function geocodeAndFly(q) {
+    if (!q.trim()) return;
+    setStatus('Searching…',true);
+    try {
+        const r = await fetch(`https://api.maptiler.com/geocoding/${encodeURIComponent(q)}.json?key=${MAPTILER_KEY}`);
+        const d = await r.json();
+        if (d.features?.length > 0) {
+            const [lng,lat] = d.features[0].geometry.coordinates;
+            marker.setLngLat([lng,lat]).addTo(map);
+            map.flyTo({center:[lng,lat],zoom:11,essential:true,duration:1400});
+            setStatus(`<i class="fas fa-check-circle text-success me-1"></i> Found: <strong>${d.features[0].place_name||q}</strong>`);
+        } else {
+            setStatus(`<i class="fas fa-exclamation-triangle text-warning me-1"></i> Location not found — try a more specific name`);
+            marker.remove();
+        }
+    } catch(e) { setStatus('<i class="fas fa-times-circle text-danger me-1"></i> Search error'); }
+}
+
+let t;
+const locIn = document.getElementById('location');
+const geoBtn = document.getElementById('geocodeBtn');
+locIn.addEventListener('input', function(){ clearTimeout(t); const v=this.value.trim(); if(!v){setStatus('Type a location above to preview on the map');marker.remove();return;} setStatus('Waiting…'); t=setTimeout(()=>geocodeAndFly(v),700); });
+geoBtn.addEventListener('click',()=>{clearTimeout(t);geocodeAndFly(locIn.value);});
+locIn.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();clearTimeout(t);geocodeAndFly(locIn.value);}});
+
+// Upload preview
+const imgInput = document.getElementById('imgInput');
+const imgPreviews = document.getElementById('imgPreviews');
+const uploadSub = document.getElementById('uploadSub');
+const uploadZone = document.getElementById('uploadZone');
+imgInput.addEventListener('change',()=>showPreviews(imgInput.files));
+uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('drag-over');});
+uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.classList.remove('drag-over');imgInput.files=e.dataTransfer.files;showPreviews(e.dataTransfer.files);});
+function showPreviews(files){
+    imgPreviews.innerHTML='';
+    if(!files.length){uploadSub.textContent='JPG, PNG, WEBP accepted';return;}
+    uploadSub.textContent=`${files.length} file${files.length>1?'s':''} selected`;
+    Array.from(files).forEach(f=>{if(!f.type.startsWith('image/'))return;const r=new FileReader();r.onload=e=>{const c=document.createElement('div');c.className='col-4 col-md-3';c.innerHTML=`<img src="${e.target.result}" class="upload-preview-img">`;imgPreviews.appendChild(c);};r.readAsDataURL(f);});
+}
+</script>

@@ -1,26 +1,113 @@
-<% layout('layouts/boilerplate')%>
-<h1>Register</h1>
-<form action="/register" method="POST" class="validated-form" novalidate>
-    <div class="mb-3">
-        <label class="form-label" for="username">Username</label>
-        <input class="form-control" type="text" id="username" name="username" required>
-        <div class="valid-feedback">
-            Looks good!
+<% layout('layouts/boilerplate') %>
+
+<div class="auth-page-wrap">
+    <div class="auth-card reveal-up">
+        <div class="auth-card-header">
+            <div class="auth-card-icon"><i class="fas fa-user-plus"></i></div>
+            <h2>Create account</h2>
+            <p>Join thousands of outdoor explorers</p>
+        </div>
+
+        <div class="auth-card-body">
+            <form action="/register" method="POST" novalidate class="validated-form">
+
+                <div class="field-group">
+                    <label class="field-label" for="username">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <input class="field-input" type="text" id="username" name="username"
+                        placeholder="Choose a username" required autocomplete="username"
+                        minlength="3" maxlength="30">
+                    <div class="invalid-feedback">Please choose a username (3–30 chars).</div>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label" for="email">
+                        <i class="fas fa-envelope"></i> Email
+                    </label>
+                    <input class="field-input" type="email" id="email" name="email"
+                        placeholder="you@example.com" required autocomplete="email">
+                    <div class="invalid-feedback">Please enter a valid email address.</div>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label" for="password">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <div class="field-addon-wrap">
+                        <input class="field-input" type="password" id="password" name="password"
+                            placeholder="Min 6 characters" required autocomplete="new-password" minlength="6">
+                        <button type="button" class="field-addon-btn" id="togglePwd" title="Show/hide password">
+                            <i class="fas fa-eye" id="pwdEyeIcon"></i>
+                        </button>
+                    </div>
+                    <div class="invalid-feedback">Password must be at least 6 characters.</div>
+                </div>
+
+                <!-- Strength bar (shown after typing) -->
+                <div id="strengthWrap" style="display:none;margin-top:-.6rem;margin-bottom:1rem">
+                    <div style="height:4px;border-radius:2px;background:var(--border);overflow:hidden">
+                        <div id="strengthBar" style="height:100%;width:0;border-radius:2px;transition:width .3s,background .3s"></div>
+                    </div>
+                    <div id="strengthLabel" style="font-size:.72rem;margin-top:.25rem;color:var(--text-muted)"></div>
+                </div>
+
+                <button type="submit" class="btn-fill"
+                    style="width:100%;justify-content:center;padding:.75rem;margin-top:.25rem">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </form>
+
+            <div class="auth-divider">or</div>
+
+            <div class="auth-footer">
+                Already have an account?
+                <a href="/login">Sign in &rarr;</a>
+            </div>
         </div>
     </div>
-    <div class="mb-3">
-        <label class="form-label" for="email">Email</label>
-        <input class="form-control" type="email" id="email" name="email" required>
-        <div class="valid-feedback">
-            Looks good!
-        </div>
-    </div>
-    <div class="mb-3">
-        <label class="form-label" for="password">Password</label>
-        <input class="form-control" type="password" id="password" name="password" required>
-        <div class="valid-feedback">
-            Looks good!
-        </div>
-    </div>
-    <button class="btn btn-success">Register</button>
-</form>
+</div>
+
+<script>
+// Show / hide password
+const togglePwd = document.getElementById('togglePwd');
+const pwdInput  = document.getElementById('password');
+const eyeIcon   = document.getElementById('pwdEyeIcon');
+if (togglePwd) {
+    togglePwd.addEventListener('click', () => {
+        const show = pwdInput.type === 'password';
+        pwdInput.type = show ? 'text' : 'password';
+        eyeIcon.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+    });
+}
+
+// Password strength
+const strengthWrap  = document.getElementById('strengthWrap');
+const strengthBar   = document.getElementById('strengthBar');
+const strengthLabel = document.getElementById('strengthLabel');
+const levels = [
+    { label:'Too short',  color:'#ef4444', w:'15%'  },
+    { label:'Weak',       color:'#f97316', w:'35%'  },
+    { label:'Fair',       color:'#eab308', w:'60%'  },
+    { label:'Good',       color:'#22c55e', w:'80%'  },
+    { label:'Strong',     color:'#16a34a', w:'100%' },
+];
+if (pwdInput) {
+    pwdInput.addEventListener('input', () => {
+        const v = pwdInput.value;
+        if (!v) { strengthWrap.style.display = 'none'; return; }
+        strengthWrap.style.display = 'block';
+        let score = 0;
+        if (v.length >= 6)  score++;
+        if (v.length >= 10) score++;
+        if (/[A-Z]/.test(v) && /[a-z]/.test(v)) score++;
+        if (/[0-9]/.test(v)) score++;
+        if (/[^A-Za-z0-9]/.test(v)) score++;
+        const lvl = Math.min(score, levels.length - 1);
+        strengthBar.style.width      = levels[lvl].w;
+        strengthBar.style.background = levels[lvl].color;
+        strengthLabel.textContent    = levels[lvl].label;
+        strengthLabel.style.color    = levels[lvl].color;
+    });
+}
+</script>

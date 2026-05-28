@@ -1,20 +1,64 @@
-<% layout('layouts/boilerplate')%>
-<h1>Login</h1>
-<form action="/login" method="POST" class="validated-form" novalidate>
-    <div class="mb-3">
-        <label class="form-label" for="username">Username</label>
-        <input class="form-control" type="text" id="username" name="username" required>
-        <div class="valid-feedback">
-            Looks good!
-        </div>
-    </div>
+<% layout('layouts/boilerplate') %>
 
-    <div class="mb-3">
-        <label class="form-label" for="password">Password</label>
-        <input class="form-control" type="password" id="password" name="password" required>
-        <div class="valid-feedback">
-            Looks good!
+<div class="auth-page-wrap">
+    <div class="auth-card reveal-up">
+        <div class="auth-card-header">
+            <div class="auth-card-icon"><i class="fas fa-sign-in-alt"></i></div>
+            <h2>Welcome back</h2>
+            <p>Sign in to your CampEase account</p>
+        </div>
+
+        <div class="auth-card-body">
+            <form action="/login" method="POST" novalidate class="validated-form">
+
+                <div class="field-group">
+                    <label class="field-label" for="username">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <input class="field-input" type="text" id="username" name="username"
+                        placeholder="Your username" required autocomplete="username">
+                    <div class="invalid-feedback">Please enter your username.</div>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label" for="password">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <div class="field-addon-wrap">
+                        <input class="field-input" type="password" id="password" name="password"
+                            placeholder="Your password" required autocomplete="current-password">
+                        <button type="button" class="field-addon-btn" id="togglePwd" title="Show/hide password">
+                            <i class="fas fa-eye" id="pwdEyeIcon"></i>
+                        </button>
+                    </div>
+                    <div class="invalid-feedback">Please enter your password.</div>
+                </div>
+
+                <button type="submit" class="btn-fill"
+                    style="width:100%;justify-content:center;padding:.75rem;margin-top:.5rem">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+
+            <div class="auth-divider">or</div>
+
+            <div class="auth-footer">
+                Don't have an account?
+                <a href="/register">Create one for free &rarr;</a>
+            </div>
         </div>
     </div>
-    <button class="btn btn-success">Login</button>
-</form>
+</div>
+
+<script>
+const togglePwd = document.getElementById('togglePwd');
+const pwdInput  = document.getElementById('password');
+const eyeIcon   = document.getElementById('pwdEyeIcon');
+if (togglePwd) {
+    togglePwd.addEventListener('click', () => {
+        const show = pwdInput.type === 'password';
+        pwdInput.type = show ? 'text' : 'password';
+        eyeIcon.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+    });
+}
+</script>

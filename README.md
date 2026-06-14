@@ -1,80 +1,42 @@
 <div align="center">
+<img src="https://capsule-render.vercel.app/api?type=venom&color=gradient&customColorList=6,11,20&height=180&section=header&text=%E2%9B%BA%20CampEase&fontSize=55&fontColor=fff&animation=fadeIn&desc=Discover%2C%20book%2C%20and%20review%20amazing%20campgrounds&descAlignY=65&descSize=18"/>
+</div>
 
-# ⛺ CampEase
+<div align="center">
 
-**Discover, book, and review amazing campgrounds — all in one place.**
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
+[![Express](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com)
+[![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com)
+[![Passport.js](https://img.shields.io/badge/Passport.js-34E27A?style=for-the-badge&logo=passport&logoColor=black)](http://www.passportjs.org)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)](https://cloudinary.com)
 
-[![Node.js](https://img.shields.io/badge/Node.js-24.x-339933?logo=node.js&logoColor=white)](https://nodejs.org)
-[![Express](https://img.shields.io/badge/Express-4.x-000000?logo=express&logoColor=white)](https://expressjs.com)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white)](https://mongodb.com)
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?logo=bootstrap&logoColor=white)](https://getbootstrap.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
-[🌐 Live Demo](https://campease.onrender.com) &nbsp;·&nbsp; [🐛 Report Bug](https://github.com/Vedant27672/CampEase/issues) &nbsp;·&nbsp; [✨ Request Feature](https://github.com/Vedant27672/CampEase/issues)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/Vedant27672/CampEase?style=for-the-badge&color=gold)](https://github.com/Vedant27672/CampEase/stargazers)
 
 </div>
 
 ---
 
-## 📸 Overview
+## 🏕️ About
 
-CampEase is a full-stack campground discovery and booking platform. Users can browse handpicked campgrounds, view them on interactive maps, write reviews, book stays with a date picker, manage a cart of multiple bookings, and sign in with Google — all wrapped in a polished responsive UI with dark mode support.
+**CampEase** is a full-stack web application for discovering, creating, and reviewing campgrounds. Users can register, add their own campgrounds with photo uploads, leave reviews with star ratings, and interact with an interactive map showing all locations. Built on the MVC pattern with full CRUD operations, authentication, and authorization.
 
 ---
 
 ## ✨ Features
 
-### 🏕️ Campgrounds
-- Browse all campgrounds in a responsive card grid with live client-side search
-- Create, edit, and delete campgrounds (authenticated owners only)
-- Drag-and-drop multi-photo upload stored on **Cloudinary**
-- Auto-geocoding — location text is silently converted to map coordinates on save/edit
-
-### 🗺️ Interactive Maps
-- Per-campground location map powered by **MapLibre GL JS** + **MapTiler**
-- Fullscreen mode switches to a clustered view of **all** campgrounds on one map
-- Live geocode preview while typing a location in the create/edit form
-
-### ⭐ Reviews
-- Star ratings (1–5) with smooth CSS animations via the Starability library
-- Add and delete reviews per campground
-- Only the review author can delete their own review
-
-### 📅 Booking System
-- **Flatpickr** date picker — existing confirmed bookings are automatically disabled
-- Conflict detection prevents double-booking the same campground
-- **Book Now** — instant single booking directly from the campground page
-- **Add to Cart** — queue multiple campgrounds with different dates
-- Live price preview: nights × nightly price updates as you select dates
-
-### 🛒 Cart
-- Session-based cart — no extra database model, naturally expires with the session
-- Review all queued reservations before confirming
-- Bulk checkout — conflict-checks every item first, then creates all bookings at once
-- Cart item count badge in the navbar updates on every request
-
-### 📆 Booking History & Calendar
-- Tabbed booking history — **Upcoming** and **Past & Cancelled**
-- Cancel any upcoming confirmed booking with one click
-- **FullCalendar** view — all confirmed bookings shown as date-range events, click any to open details
-
-### 🔐 Authentication
-- Local sign-up / sign-in with Passport.js (username + password)
-- **Google OAuth 2.0** — one-click sign-in; automatically links to an existing local account if emails match
-- All protected routes save and restore the intended destination after login
-
-### 📖 API Documentation
-- Auto-generated **Swagger / OpenAPI** docs served at `/api-docs`
-- Powered by `swagger-autogen` (scans route files) + `swagger-ui-express` (interactive UI)
-- All routes grouped by feature — Campgrounds, Reviews, Bookings, Cart, Auth
-- Regenerate any time with `npm run swagger`; auto-regenerated on every Render deploy
-
-### 🎨 UI / UX
-- Full **light / dark mode** — persisted in `localStorage`, respects `prefers-color-scheme` on first visit
-- Live stat counters on the home page pulled directly from the database
-- Scroll-reveal entrance animations and toast flash notifications
-- Fully responsive — mobile hamburger drawer, touch-friendly date pickers
-- Password strength indicator on the register page
+| Feature | Description |
+|---|---|
+| 🔐 **Auth** | Secure registration & login via Passport.js (bcrypt hashing) |
+| 🗺️ **Map** | Interactive Mapbox cluster map showing all campgrounds |
+| 📍 **Geocoding** | Automatic location resolution via Mapbox Geocoding API |
+| 🖼️ **Image Upload** | Multi-image upload with Cloudinary CDN storage |
+| ⭐ **Reviews** | Star-rated reviews with author-only delete permission |
+| 🛡️ **Authorization** | Route-level protection — only owners can edit/delete |
+| ✅ **Validation** | Server-side (Joi) + client-side form validation |
+| 💾 **Sessions** | Persistent sessions via connect-mongo |
+| 🚨 **Flash Messages** | Success/error alerts throughout the app |
 
 ---
 
@@ -82,85 +44,48 @@ CampEase is a full-stack campground discovery and booking platform. Users can br
 
 | Layer | Technology |
 |---|---|
-| Runtime | Node.js 24.x |
-| Framework | Express 4.x |
-| Database | MongoDB (Mongoose 5.x) via Atlas |
-| Auth | Passport.js — Local Strategy + Google OAuth 2.0 |
-| Templates | EJS + ejs-mate (layouts) |
-| Validation | Joi (server-side) + Bootstrap classes (client-side) |
-| Image Hosting | Cloudinary + Multer |
-| Maps | MapLibre GL JS v4 + MapTiler (geocoding + tiles) |
-| Date Picker | Flatpickr (CDN) |
-| Calendar | FullCalendar 6 (CDN) |
-| CSS | Bootstrap 5.3 + custom CSS design system (CSS custom properties) |
-| API Docs | swagger-autogen + swagger-ui-express |
-| Session Store | connect-mongo (MongoDB-backed sessions) |
-| Deployment | Render |
+| **Runtime** | Node.js |
+| **Framework** | Express.js |
+| **Database** | MongoDB + Mongoose |
+| **Auth** | Passport.js (Local Strategy) |
+| **Templating** | EJS + EJS-Mate |
+| **Styling** | Bootstrap 5 |
+| **Maps** | Mapbox GL JS + Mapbox Geocoding |
+| **Images** | Cloudinary + Multer |
+| **Validation** | Joi |
+| **Sessions** | express-session + connect-mongo |
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
-- Node.js ≥ 18
-- A [MongoDB Atlas](https://cloud.mongodb.com) cluster
-- A [Cloudinary](https://cloudinary.com) account (free tier)
-- A [MapTiler](https://maptiler.com) account (free tier)
-- *(Optional)* Google Cloud project with OAuth 2.0 credentials for Google login
+- Node.js 18+
+- MongoDB (local or Atlas)
+- Cloudinary account
+- Mapbox token
 
 ### Installation
 
 ```bash
+# Clone the repo
 git clone https://github.com/Vedant27672/CampEase.git
 cd CampEase
+
+# Install dependencies
 npm install
+
+# Create .env file
+cp .env.example .env
+# Fill in: CLOUDINARY_CLOUD_NAME, CLOUDINARY_KEY, CLOUDINARY_SECRET,
+#          MAPBOX_TOKEN, DB_URL, SECRET
 ```
 
-### Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-# MongoDB Atlas connection string
-atlas_URL=mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/?appName=Cluster0
-
-# Session (use a long random string in production)
-SESSION_SECRET=your-strong-random-secret
-
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_KEY=your_api_key
-CLOUDINARY_SECRET=your_api_secret
-
-# MapTiler
-MAPTILER_TOKEN=your_maptiler_token
-
-# Google OAuth — optional, app works without it
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-```
-
-> **Google OAuth setup:**
-> 1. Create a project in [Google Cloud Console](https://console.cloud.google.com)
-> 2. Go to **APIs & Services → Credentials → Create OAuth 2.0 Client ID**
-> 3. Add authorized redirect URIs:
->    - `http://localhost:3000/auth/google/callback`
->    - `https://your-app.onrender.com/auth/google/callback`
-> 4. Copy the Client ID and Secret into `.env`
-
-### Run Locally
+### Run
 
 ```bash
 node app.js
-```
-
-Visit [http://localhost:3000](http://localhost:3000)
-
-### Seed Sample Data *(optional)*
-
-```bash
-node seeds/index.js
+# Visit http://localhost:3000
 ```
 
 ---
@@ -169,104 +94,17 @@ node seeds/index.js
 
 ```
 CampEase/
-├── controllers/
-│   ├── campgrounds.js   # CRUD, geocoding, blocked-dates query
-│   ├── users.js         # Register, login, logout, Google OAuth callback
-│   ├── reviews.js       # Create & delete reviews
-│   ├── bookings.js      # Create, list, calendar, detail, cancel
-│   └── cart.js          # Add, remove, bulk checkout (session-based)
-├── models/
-│   ├── campground.js    # Title, images, price, location, GeoJSON geometry
-│   ├── user.js          # Email, username, googleId (passport-local-mongoose)
-│   ├── review.js        # Body, rating, author
-│   └── booking.js       # Campground, user, checkIn/Out, totalPrice, status
-├── routes/
-│   ├── campgrounds.js
-│   ├── users.js         # Local auth + Google OAuth routes
-│   ├── reviews.js
-│   ├── bookings.js
-│   └── cart.js
-├── views/
-│   ├── layouts/         # boilerplate.ejs
-│   ├── partials/        # navbar, footer, flash
-│   ├── campgrounds/     # index, show, new, edit
-│   ├── users/           # login, register
-│   ├── bookings/        # index, calendar, confirmation
-│   └── cart/            # index
-├── public/
-│   ├── stylesheets/     # styles.css (design system), stars.css
-│   └── javascripts/     # animations.js, validateForms.js
-├── middleware.js         # isLoggedIn, isAuthor, isReviewAuthor, isBookingOwner, validators
-├── schemas.js            # Joi validation schemas (campground, review, booking)
-├── cloudinary/           # Multer-Cloudinary storage config
-└── app.js                # Express setup, Passport strategies, route mounts
+├── models/          # Mongoose schemas (User, Campground, Review)
+├── routes/          # Express routers
+├── views/           # EJS templates
+├── public/          # Static assets (CSS, JS)
+├── controllers/     # Route logic
+├── middleware.js    # Auth & validation middleware
+└── app.js           # Entry point
 ```
 
 ---
 
-## 🔑 Key Routes
-
-| Method | Route | Description |
-|---|---|---|
-| `GET` | `/` | Home — live stat counters |
-| `GET` | `/campgrounds` | All campgrounds with search |
-| `POST` | `/campgrounds` | Create campground |
-| `GET` | `/campgrounds/:id` | Detail page + booking widget |
-| `PUT` | `/campgrounds/:id` | Update campground |
-| `DELETE` | `/campgrounds/:id` | Delete campground |
-| `POST` | `/campgrounds/:id/reviews` | Add review |
-| `POST` | `/campgrounds/:id/bookings` | Book Now (direct) |
-| `GET` | `/cart` | View cart |
-| `POST` | `/cart/add` | Add to cart |
-| `POST` | `/cart/checkout` | Confirm all cart bookings |
-| `GET` | `/bookings` | Booking history |
-| `GET` | `/bookings/calendar` | FullCalendar view |
-| `POST` | `/bookings/:id/cancel` | Cancel booking |
-| `GET` | `/register` | Register |
-| `GET` | `/login` | Login |
-| `GET` | `/auth/google` | Google OAuth sign-in |
-| `GET` | `/api-docs` | Interactive Swagger API docs |
-
----
-
-## 🌐 Deploying to Render
-
-1. Push your code to GitHub
-2. Create a **Web Service** on [Render](https://render.com) and connect your repo
-3. Set **Build Command:** `npm install && npm run swagger`
-4. Set **Start Command:** `node app.js`
-5. Add all env vars from `.env` in the Render **Environment** tab
-6. **Do not** set `GOOGLE_CALLBACK_URL` — it is derived automatically from the request (the app has `trust proxy` enabled for Render's HTTPS proxy)
-
----
-
-## 🗺️ Roadmap
-
-- [ ] Razorpay / Stripe payment integration
-- [ ] Booking confirmation emails (Nodemailer)
-- [ ] Host dashboard — owners see bookings and revenue per campground
-- [ ] Wishlist / saved campgrounds
-- [ ] Reviews gated by completed booking
-- [ ] Dynamic / seasonal pricing
-
----
-
-## 🤝 Contributing
-
-Pull requests are welcome! For major changes, please open an issue first to discuss what you'd like to change.
-
----
-
-## 👤 Author
-
-**Vedant Singh Chauhan**
-
-[![GitHub](https://img.shields.io/badge/GitHub-Vedant27672-181717?logo=github)](https://github.com/Vedant27672)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-vedant--singh--chauhan-0A66C2?logo=linkedin)](https://www.linkedin.com/in/vedant-singh-chauhan-417a10248)
-[![Email](https://img.shields.io/badge/Email-vedant.chauhan213%40gmail.com-D14836?logo=gmail&logoColor=white)](mailto:vedant.chauhan213@gmail.com)
-
----
-
 <div align="center">
-Made with ❤️ by <a href="https://github.com/Vedant27672">Vedant Singh Chauhan</a>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=100&section=footer"/>
 </div>
